@@ -1,12 +1,17 @@
-
+#include "Utils.h"
 #include "Game.h"
 
 using namespace sf;
 using namespace std;
 
+void Init();
+void Update();
+void Render();
+
 int main()
 {
-	RenderWindow window;
+	RenderWindow window(Defaults::windowResolution, Defaults::windowName);
+	Init();
 	Game game;
 	game.Init();
 
@@ -21,4 +26,10 @@ int main()
 	}
 
 	return 0;
+}
+
+void Init()
+{
+	UtilityBelt Utils;
+	Utils.Load();
 }

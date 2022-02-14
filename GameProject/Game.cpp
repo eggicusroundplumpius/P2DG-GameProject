@@ -18,7 +18,22 @@ using namespace std;
 /// actions, intended to prepare the game to run.
 /// 
 /// ///////////////////////////////////////////////////////////
-void Init()
+void Game::Init()
+{
+	Object player;
+	player.Init(Object::Type::Player);
+}
+
+/// ///////////////////////////////////////////////////////////
+///
+/// Primary render function: contains cases for main screens 
+/// available, handles drawing-related functions.
+/// 
+/// \param window - Main window object to draw to.
+/// \param elapsed - elapsed time in seconds since last update.
+/// 
+/// ///////////////////////////////////////////////////////////
+void Game::Update(RenderWindow& window, float elapsed)
 {
 
 }
@@ -32,21 +47,7 @@ void Init()
 /// \param elapsed - elapsed time in seconds since last update.
 /// 
 /// ///////////////////////////////////////////////////////////
-void Update(RenderWindow& window, float elapsed)
-{
-
-}
-
-/// ///////////////////////////////////////////////////////////
-///
-/// Primary render function: contains cases for main screens 
-/// available, handles drawing-related functions.
-/// 
-/// \param window - Main window object to draw to.
-/// \param elapsed - elapsed time in seconds since last update.
-/// 
-/// ///////////////////////////////////////////////////////////
-void Render(RenderWindow& window, float elapsed)
+void Game::Render(RenderWindow& window, float elapsed)
 {
 
 }
