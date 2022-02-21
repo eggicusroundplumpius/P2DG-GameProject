@@ -27,7 +27,7 @@ struct FontType
 	sf::Font Regular;
 	sf::Font Bold;
 	sf::Font Italic;
-	sf::Font BoltItalic;
+	sf::Font BoldItalic;
 	sf::Font Light;
 	sf::Font LightItalic;
 };

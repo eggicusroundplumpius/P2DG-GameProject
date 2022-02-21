@@ -10,6 +10,7 @@ void Render(RenderWindow& window, float elapsed);
 Game game;
 Resource resource;
 UtilityBelt Utils;
+UI ui;
 
 int main()
 {
@@ -33,7 +34,8 @@ void Init(Resource &resource)
 {
 	Utils.Load(resource.loadFonts, resource.loadFontPaths);
 	Utils.Load(resource.loadTextures, resource.loadTexturePaths);
-
+	
+	ui.Init();
 	game.Init(resource);
 }
 void Update(RenderWindow& window, float elapsed)
@@ -43,4 +45,6 @@ void Update(RenderWindow& window, float elapsed)
 void Render(RenderWindow& window, float elapsed)
 {
 	game.Render(window, elapsed);
+	ui.Render();
+	window.display();
 }

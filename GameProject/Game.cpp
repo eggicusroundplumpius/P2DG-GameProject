@@ -20,8 +20,9 @@ using namespace std;
 /// ///////////////////////////////////////////////////////////
 void Game::Init(Resource &resource)
 {
-	Object player;
-	player.Init(Object::Type::Player, resource);
+	background.Init(Type::Static_Environment, resource.texBackground);
+	ground.Init(Type::Static_Environment, resource.texGround);
+	player.Init(Type::Player, resource.texShip);
 	
 }
 
