@@ -18,10 +18,11 @@ using namespace std;
 /// actions, intended to prepare the game to run.
 /// 
 /// ///////////////////////////////////////////////////////////
-void Game::Init()
+void Game::Init(Resource &resource)
 {
 	Object player;
-	player.Init(Object::Type::Player);
+	player.Init(Object::Type::Player, resource);
+	
 }
 
 /// ///////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 
 #include "Utils.h"
 
-void shapelistDraw(std::vector <sf::Drawable*> &shapes, sf::RenderWindow& window)
+void shapelistDraw(std::vector<sf::Drawable*> &shapes, sf::RenderWindow& window)
 {
 	for (Drawable* shape : shapes)
 	{
@@ -9,7 +9,11 @@ void shapelistDraw(std::vector <sf::Drawable*> &shapes, sf::RenderWindow& window
 	}
 }
 
-bool UtilityBelt::Load(vector<sf::Font*>& loadObjects, const vector<string>& loadPaths)
+bool UtilityBelt::Load(std::vector<FontType*> const& loadObjects, vector<vector<string>> const& loadPaths)
+{
+	return false;
+}
+bool UtilityBelt::Load(std::vector<sf::Texture*> const& loadObjects, vector<string> const& loadPaths)
 {
 	return false;
 }

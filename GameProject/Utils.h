@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
-
-#include "Game.h"
+#include "SFML/Graphics.hpp"
 
 using namespace std;
 using namespace sf;
@@ -41,5 +40,6 @@ struct FontType
 /// ///////////////////////////////////////////////////////////
 struct UtilityBelt
 {
-	bool Load(vector <sf::Font*>& loadObjects, const vector <string> &loadPaths);
+	bool Load(std::vector<FontType*> const& loadObjects, vector<vector<string>> const& loadPaths);
+	bool Load(std::vector<sf::Texture*> const& loadObjects, vector<string> const& loadPaths);
 };
