@@ -43,3 +43,5 @@ struct UtilityBelt
 	bool Load(std::vector<FontType*> const& loadObjects, vector<vector<string>> const& loadPaths);
 	bool Load(std::vector<sf::Texture*> const& loadObjects, vector<string> const& loadPaths);
 };
+
+void draw(std::vector<sf::Drawable*>& uiDrawables, std::vector<sf::Drawable*>& gameDrawables, sf::RenderWindow& window);

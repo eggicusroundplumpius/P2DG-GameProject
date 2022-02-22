@@ -1,36 +1,39 @@
-#include "Game.h"
+#include "UI.h"
 
 using namespace sf;
 using namespace std;
 
-void Init(Resource &resource);
-void Update(RenderWindow& window, float elapsed);
+void Init();
+void Update(RenderWindow& window, Event& event, float elapsed);
 void Render(RenderWindow& window, float elapsed);
 
+UI ui;
 Game game;
 Resource resource;
 UtilityBelt Utils;
-UI ui;
 
 int main()
 {
 	RenderWindow window(Defaults::windowResolution, Defaults::windowName);
-	Init(resource);
-	
-	Clock mainClock;
+	Init();
+
 	float elapsed;
+	Clock mainClock;
 
 	while (window.isOpen())
 	{
 		elapsed = mainClock.getElapsedTime().asSeconds();
-		Update(window, elapsed);
+		mainClock.restart();
+
+		Event event;
+		Update(window, event, elapsed);
 		Render(window, elapsed);
 	}
 
 	return 0;
 }
 
-void Init(Resource &resource)
+void Init()
 {
 	Utils.Load(resource.loadFonts, resource.loadFontPaths);
 	Utils.Load(resource.loadTextures, resource.loadTexturePaths);
@@ -38,13 +41,18 @@ void Init(Resource &resource)
 	ui.Init();
 	game.Init(resource);
 }
-void Update(RenderWindow& window, float elapsed)
+void Update(RenderWindow& window, Event& event, float elapsed)
 {
+	while (window.pollEvent(event)) if (event.type == Event::Closed) window.close();
+	
+	ui.Update(window, game.currentMode);
 	game.Update(window, elapsed);
 }
 void Render(RenderWindow& window, float elapsed)
 {
+	ui.Render(window);
 	game.Render(window, elapsed);
-	ui.Render();
+
+	draw(ui.Drawables, game.Drawables, window);
 	window.display();
 }
