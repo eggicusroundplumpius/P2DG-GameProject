@@ -3,19 +3,19 @@
 using namespace sf;
 using namespace std;
 
-void Init();
-void Update(RenderWindow& window, Event& event, float elapsed);
-void Render(RenderWindow& window, float elapsed);
-
-UI ui;
-Game game;
-Resource resource;
-UtilityBelt Utils;
+void Init(Resource* resource, UtilityBelt& utils, Game& game, UI& ui);
+void Update(RenderWindow& window, Game& game, UI& ui, Event& event, float elapsed);
+void Render(RenderWindow& window, Game& game, UI& ui, float elapsed);
 
 int main()
 {
-	RenderWindow window(Defaults::windowResolution, Defaults::windowName);
-	Init();
+	UI ui;
+	Game game;
+	Resource resource;
+	UtilityBelt utils;
+	RenderWindow window(Defaults::windowResolution, Defaults::windowName, Defaults::windowMode);
+
+	Init(&resource, utils, game, ui);
 
 	float elapsed;
 	Clock mainClock;
@@ -26,29 +26,29 @@ int main()
 		mainClock.restart();
 
 		Event event;
-		Update(window, event, elapsed);
-		Render(window, elapsed);
+		Update(window, game, ui, event, elapsed);
+		Render(window, game, ui, elapsed);
 	}
 
 	return 0;
 }
 
-void Init()
+void Init(Resource* resource, UtilityBelt& utils, Game& game, UI& ui)
 {
-	Utils.Load(resource.loadFonts, resource.loadFontPaths);
-	Utils.Load(resource.loadTextures, resource.loadTexturePaths);
+	utils.Load(resource->loadFonts, resource->loadFontPaths);
+	utils.Load(resource->loadTextures, resource->loadTexturePaths);
 	
-	ui.Init();
+	ui.Init(resource);
 	game.Init(resource);
 }
-void Update(RenderWindow& window, Event& event, float elapsed)
+void Update(RenderWindow& window, Game& game, UI& ui, Event& event, float elapsed)
 {
 	while (window.pollEvent(event)) if (event.type == Event::Closed) window.close();
 	
-	ui.Update(window, game.currentMode);
-	game.Update(window, elapsed);
+	ui.Update(window, event, game.currentMode);
+	game.Update(window, event, elapsed);
 }
-void Render(RenderWindow& window, float elapsed)
+void Render(RenderWindow& window, Game& game, UI& ui, float elapsed)
 {
 	ui.Render(window);
 	game.Render(window, elapsed);

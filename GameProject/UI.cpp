@@ -8,8 +8,9 @@
 	/// actions, intended to prepare the UI to run.
 	/// 
 	/// ///////////////////////////////////////////////////////////
-	void UI::Init()
+	void UI::Init(Resource* resource)
 	{
+		pointerResource = resource;
 		modeChanged = true;
 	}
 
@@ -19,29 +20,62 @@
 	/// branches for triggered events.
 	/// 
 	/// ///////////////////////////////////////////////////////////
-	void UI::Update(RenderWindow& window, const Game::Mode& mode)
+	void UI::Update(RenderWindow& window, Event event, const Game::Mode& mode)
 	{
+		percentBounds = { (float)window.getSize().x / 100.f, (float)window.getSize().y / 100.f };
 		if (modeChanged)
 		{
+			Elements.clear();
 			switch (mode) {
 			case (Game::Mode::menuRoot):
 
-				TextBox title;
-				title.text.setPosition((float)window.getSize().x / 2.f, (float)window.getSize().y / 3.f);
-				Elements.push_back(title);
+				//Title TextBox
+				title.Init(this);
+				title.text.setPosition(percentBounds.x * 50.f, percentBounds.y * 50.f);
+				title.text.setString("Game Project");
+				title.text.setScale((float)Defaults::fontSize, (float)Defaults::fontSize);
+				if (title.visible) Drawables.push_back(&title.text);
 
-				Button play;
-				play.Frame.setPosition((float)window.getSize().x / 2u, (float)window.getSize().y / 2u);
-				Elements.push_back(play);
+				//Play Button
+				play.Init(this);
+				play.Frame.setPosition(percentBounds.x * 75.f, percentBounds.y * 33.3f);
+				play.text.setPosition(percentBounds.x * 75.f, percentBounds.y * 33.3f);
+				play.text.setString("Play");
+				if (play.visible) { Drawables.push_back(&play.Frame); Drawables.push_back(&play.text); }
 
-				Button options;
-				Elements.push_back(options);
+				//Options Button
+				options.Init(this);
+				options.Frame.setPosition(percentBounds.x * 75.f, percentBounds.y * 66.6f);
+				options.text.setPosition(percentBounds.x * 75.f, percentBounds.y * 66.6f);
+				options.text.setString("Options");
+				if (options.visible) Drawables.push_back(&options.Frame);
 
-				Button mute;
-				Elements.push_back(mute);
+				//Mute Button
+				mute.Init(this);
+				mute.Frame.setPosition(percentBounds.x * 90.f, percentBounds.y * 10.f);
+				mute.customFrame.setPosition(percentBounds.x * 90.f, percentBounds.y * 10.f);
+				mute.customFrame.setTexture(pointerResource->iconMute);
+				if (mute.visible) { Drawables.push_back(&mute.Frame); Drawables.push_back(&mute.customFrame); }
 
-				Button exit;
-				Elements.push_back(exit);
+				//Exit Button
+				exit.Init(this);
+				exit.Frame.setPosition(percentBounds.x * 90.f, percentBounds.y * 10.f);
+				exit.Frame.setSize(Defaults::iconSize);
+				exit.customFrame.setPosition(percentBounds.x * 90.f, percentBounds.y * 10.f);
+				exit.customFrame.setTexture(pointerResource->iconExit);
+				exit.customFrame.setTextureRect(exit.Frame.getTextureRect());
+
+			case (Game::Mode::menuOptions):
+				
+				//Title TextBox
+				title.Init(this);
+				title.text.setPosition(percentBounds.x * 50.f, percentBounds.y * 25.f);
+				title.text.setString("Options");
+				title.text.setScale(30.f, 30.f);
+
+				//Back Button
+				back.Frame.setPosition(percentBounds.x * 10.f, percentBounds.y * 10.f);
+				back.customFrame.setTexture(pointerResource->iconBack);
 			}
 		}
 	}
@@ -56,19 +90,55 @@
 	/// ///////////////////////////////////////////////////////////
 	void UI::Render(RenderWindow& window)
 	{
-
+		for (Element* element : Elements)
+		{
+			if (element->visible)
+			{
+				if (element->type == elementType::button)
+				{
+					Drawables.push_back(&element->Frame);
+					Drawables.push_back(element->pointerDrawMember);
+				}
+				else if (element->type == elementType::textbox)
+				{
+					Drawables.push_back(&element->Frame);
+					Drawables.push_back(element->pointerDrawMember);
+				}
+				else if (element->type == elementType::picturebox)
+				{
+					Drawables.push_back(&element->Frame);
+					Drawables.push_back(element->pointerDrawMember);
+				}
+			}
+		}
 	}
 
+/* Element Instance Functions */
 
-
-void UI::Element::Init(UI* pointerUI_In)
-{
-	pointerUI = pointerUI_In;
-
-	pointerUI->Drawables.push_back(&this->Frame);
-}
+	/// ///////////////////////////////////////////////////////////
+	///
+	/// Initialisation function - performs many one-time only
+	/// actions, intended to prepare the instance to run. All
+	/// UI Elements derrive this function.
+	/// 
+	/// \param pointerUI_In - pointer parent to UI object
+	/// 
+	/// ///////////////////////////////////////////////////////////
+	void UI::Element::Init(UI* pointerUI_In)
+	{
+		pointerUI = pointerUI_In;
+		pointerUI->Elements.push_back(this);
+	}
 
 /* Interactable Instance Functions */
+
+	void UI::Interactable::Update()
+	{
+		if (customFrame.getTexture())
+		{
+
+		}
+	}
 
 	/// ///////////////////////////////////////////////////////////
 	///
@@ -87,7 +157,7 @@ void UI::Element::Init(UI* pointerUI_In)
 	/// click event is registered on the current instance.
 	/// 
 	/// ///////////////////////////////////////////////////////////
-	void UI::Interactable::Click(sf::Mouse::Button const mouseButton)
+	void UI::Interactable::Click(sf::Mouse::Button const& mouseButton)
 	{
 		
 	}
@@ -98,7 +168,7 @@ void UI::Element::Init(UI* pointerUI_In)
 	/// mouse down event is registered and is held.
 	/// 
 	/// ///////////////////////////////////////////////////////////
-	void UI::Interactable::Hold(sf::Mouse::Button const mouseButton)
+	void UI::Interactable::Hold(sf::Mouse::Button const& mouseButton)
 	{
 
 	}
@@ -111,7 +181,14 @@ void UI::Element::Init(UI* pointerUI_In)
 	/// is flagged as draggable.
 	/// 
 	/// ///////////////////////////////////////////////////////////
-	void UI::Interactable::Drag(sf::Mouse::Button const mouseButton)
+	void UI::Interactable::Drag(sf::Mouse::Button const& mouseButton)
+	{
+
+	}
+
+/* Interactable Triggered Functions*/
+
+	void UI::changeScreen(Game::Mode const& mode)
 	{
 
 	}

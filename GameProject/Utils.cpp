@@ -13,6 +13,12 @@ void draw(std::vector<sf::Drawable*>& uiDrawables, std::vector<sf::Drawable*>& g
 
 	for (Drawable* object : collatedDrawables) window.draw(*object);
 }
+Vector2f Decay(Vector2f& const inValue, float percent, float interval, float time)
+{
+	float mod = 1.0f - percent * (time / interval);
+	Vector2f outValue(inValue.x * mod, inValue.y * mod);
+	return outValue;
+}
 
 bool UtilityBelt::Load(std::vector<FontType*> const& loadObjects, vector<vector<string>> const& loadPaths)
 {
@@ -72,7 +78,11 @@ bool UtilityBelt::Load(std::vector<FontType*> const& loadObjects, vector<vector<
 }
 bool UtilityBelt::Load(std::vector<sf::Texture*> const& loadObjects, vector<string> const& loadPaths)
 {
-	if (loadObjects.size() != loadPaths.size()) return false;
+	if (loadObjects.size() != loadPaths.size())
+	{
+		cout << "Error reading path list: mismatching entries. Textures not loaded." << "\n";
+		return false;
+	}
 
 	int i = 0;
 	for (std::string path : loadPaths)
@@ -82,9 +92,10 @@ bool UtilityBelt::Load(std::vector<sf::Texture*> const& loadObjects, vector<stri
 			std::cout << "Attempting to Load " << path << "\n";
 			loadObjects[i]->loadFromFile(path);
 		}
-		else return false;
+		else std::cout << "Failed to Load " << path << "\n";
 
 		i++;
 	}
 	return true;
 }
+

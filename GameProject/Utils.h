@@ -1,9 +1,21 @@
 #pragma once
 #include <vector>
+#include <typeinfo>
 #include "SFML/Graphics.hpp"
 
 using namespace std;
 using namespace sf;
+
+namespace Defaults
+{
+	const sf::VideoMode windowResolution = { 1280, 720 };
+	const Uint32 windowMode = sf::Style::Default;
+	const std::string windowName = "Game Project";
+	const unsigned fontSize = 50u;
+	const Vector2f iconSize = { 32.f, 32.f };
+	const int playerSpeed = 8;
+	const int enemySpeed = 20;
+}
 
 /// ///////////////////////////////////////////////////////////
 ///
@@ -45,3 +57,4 @@ struct UtilityBelt
 };
 
 void draw(std::vector<sf::Drawable*>& uiDrawables, std::vector<sf::Drawable*>& gameDrawables, sf::RenderWindow& window);
+Vector2f Decay(Vector2f& const inValue, float percent, float interval, float time);

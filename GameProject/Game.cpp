@@ -20,12 +20,12 @@ using namespace std;
 	/// actions, intended to prepare the game to run.
 	/// 
 	/// ///////////////////////////////////////////////////////////
-	void Game::Init(Resource &resource)
+	void Game::Init(Resource* resource)
 	{
-		background.Init(Type::Static_Environment, resource.texBackground, this);
-		ground.Init(Type::Static_Environment, resource.texGround, this);
-		player.Init(Type::Player, resource.texShip, this);
-	
+		pointerResource = resource;
+		background.Init(Type::Static_Environment, pointerResource->texBackground, this);
+		ground.Init(Type::Static_Environment, pointerResource->texGround, this);
+		player.Init(Type::Player, pointerResource->texShip, this);
 	}
 
 	/// ///////////////////////////////////////////////////////////
@@ -37,9 +37,41 @@ using namespace std;
 	/// \param elapsed - elapsed time in seconds since last update.
 	/// 
 	/// ///////////////////////////////////////////////////////////
-	void Game::Update(RenderWindow& window, float elapsed)
+	void Game::Update(RenderWindow& window, Event event, float elapsed)
 	{
+		/*switch (Game::currentMode)
+		{
+		case Game::Mode::gamePlay:
+			if (event.text.unicode == keyboard.Up) player.sprite.setPosition(player.sprite.get);
+		}*/
 
+		player.position = player.sprite.getPosition();
+		player.bounds = player.sprite.getGlobalBounds();
+		windowSize = { (float)window.getSize().x, (float)window.getSize().y };
+
+		static Vector2f thrust{ 0,0 };
+
+		if (Keyboard::isKeyPressed(Keyboard::Up) || Keyboard::isKeyPressed(Keyboard::Down))
+		{
+			if (Keyboard::isKeyPressed(Keyboard::Up))
+				thrust.y = -Defaults::playerSpeed;
+			else if (Keyboard::isKeyPressed(Keyboard::Down))
+				thrust.y = Defaults::playerSpeed;
+		}
+
+		player.position += thrust * elapsed;
+		thrust = Decay(thrust, 0.1f, 0.02f, elapsed);
+
+		if (player.position.y < (player.bounds.height * 0.6f))
+			player.position.y = player.bounds.height * 0.6f;
+		if (player.position.y > (windowSize.y - player.bounds.height * 0.6f))
+			player.position.y = windowSize.y - player.bounds.height * 0.6f;
+		if (player.position.x < (player.bounds.width * 0.6f))
+			player.position.x = player.bounds.width * 0.6f;
+		if (player.position.x > (windowSize.x - player.bounds.width * 0.6f))
+			player.position.x = windowSize.x - player.bounds.width * 0.6f;
+
+		player.sprite.setPosition(player.position);
 	}
 
 	/// ///////////////////////////////////////////////////////////
