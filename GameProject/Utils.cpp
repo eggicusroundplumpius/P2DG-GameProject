@@ -8,16 +8,23 @@ void draw(std::vector<sf::Drawable*>& uiDrawables, std::vector<sf::Drawable*>& g
 {
 	std::vector<sf::Drawable*> collatedDrawables;
 
-	for (Drawable* i : uiDrawables) collatedDrawables.push_back(i);
 	for (Drawable* i : gameDrawables) collatedDrawables.push_back(i);
+	for (Drawable* i : uiDrawables) collatedDrawables.push_back(i);
 
 	for (Drawable* object : collatedDrawables) window.draw(*object);
 }
-Vector2f Decay(Vector2f& const inValue, float percent, float interval, float time)
+Vector2f Decay(Vector2f const& inValue, float percent, float interval, float elapsed) 
 {
-	float mod = 1.0f - percent * (time / interval);
+	float mod = 1.0f - percent * (elapsed / interval);
 	Vector2f outValue(inValue.x * mod, inValue.y * mod);
 	return outValue;
+}
+bool distanceCheck(Vector2f const& position1, Vector2f const& position2, float minimumDistance) 
+{
+	float distance = (position1.x - position2.x) * (position1.x - position2.x) + 
+				(position1.y - position2.y) * (position1.y - position2.y);
+	distance = sqrtf(distance);
+	return distance <= minimumDistance;
 }
 
 bool UtilityBelt::Load(std::vector<FontType*> const& loadObjects, vector<vector<string>> const& loadPaths)
@@ -31,6 +38,7 @@ bool UtilityBelt::Load(std::vector<FontType*> const& loadObjects, vector<vector<
 		{
 			std::cout << "Attempting to load " << fontLib[0] << "\n";	//Regular
 			loadObjects[i]->Regular.loadFromFile(fontLib[0]);
+			//loadObjects[i]->Regular.
 		}
 		else missingCount++;
 		

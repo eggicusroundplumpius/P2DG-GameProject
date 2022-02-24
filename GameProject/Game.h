@@ -27,7 +27,7 @@ struct Resource
 													&iconBack, &iconPause, &iconMusic, &iconMute, &iconExit };
 	const vector<string> loadTexturePaths =
 	{
-		"data/tex/backgound.png",
+		"data/tex/background.png",
 		"data/tex/ground.png",
 		"data/tex/ship.png",
 		"data/tex/enemy.png",
@@ -60,50 +60,131 @@ struct Resource
 
 struct Game
 {
-	void Init(Resource* resource);
-	void Update(sf::RenderWindow& window, Event event, float elapsed);
-	void Render(sf::RenderWindow& window, float elapsed);
-
 	enum class Mode {menuRoot, menuOptions, menuAbout, gamePlay, gamePause}; //Current Display Mode
 	enum class Type {Player, Enemy, Static_Environment, Dyn_Environment}; //Object Type
 
-	Resource* pointerResource;
-	Keyboard keyboard;
+	/// ///////////////////////////////////////////////////////////
+	///
+	/// Initialisation function - performs many one-time only
+	/// actions, intended to prepare the game to run.
+	/// 
+	/// ///////////////////////////////////////////////////////////
+	void Init(Resource* pointerResource_In);
+
+	/// ///////////////////////////////////////////////////////////
+	///
+	/// Primary render function: contains cases for main screens 
+	/// available, handles drawing-related functions.
+	/// 
+	/// \param window - Main window object to draw to.
+	/// \param elapsed - elapsed time in seconds since last update.
+	/// 
+	/// ///////////////////////////////////////////////////////////
+	void Update(sf::RenderWindow& window, Event event, float elapsed);
+
+	/// ///////////////////////////////////////////////////////////
+	///
+	/// Primary render function: contains cases for main screens 
+	/// available, handles drawing-related functions.
+	/// 
+	/// \param window - Main window object to draw to.
+	/// \param elapsed - elapsed time in seconds since last update.
+	/// 
+	/// ///////////////////////////////////////////////////////////
+	void Render(sf::RenderWindow& window, float elapsed);
+
+	/// ///////////////////////////////////////////////////////////
+	///
+	/// Updates player object position, speed and takes input.
+	/// 
+	/// \param windowSize - Main window size
+	/// \param elapsed - elapsed time in seconds since last update.
+	/// 
+	/// ///////////////////////////////////////////////////////////
+	void PlayerUpdate(Vector2f const& windowSize, float elapsed);
+
+	/// ///////////////////////////////////////////////////////////
+	///
+	/// Changes the current mode - exists to be called from UI
+	/// side.
+	/// 
+	/// \param mode - The mode to change to
+	/// 
+	/// ///////////////////////////////////////////////////////////
+	void changeMode(Mode mode);
+
+	Resource* pointerResource;		// Pointer to root resource object
 
 	/////////////////////////
 	/// Basic Information
 	/////////////////////////
 
-	const float gameVersion = 0.1f;
-	int score = 0;
-	int lives = 3;
-	Mode currentMode = Mode::menuRoot;
-	Vector2f windowSize;
-
-	std::vector <Drawable*> Drawables; // Vector of objects to pass into the draw function
+	const float gameVersion = 0.1f;		// Release Version of the Game
+	int score = 0;						// Player Score in current game
+	int lives = 3;						// Player Lives in current game
+	Mode currentMode = Mode::gamePlay;	// Current & default screen mode
+	Vector2f windowSize;				// Size of window
+	Vector2f percentBounds;				// Represents a single percent of the window's resolution
 
 	///////////////////////
-	/// Object Template
+	/// Object Type
 	///////////////////////
 	struct Object
 	{
-		sf::Sprite sprite;		//Sprite Object
-		sf::IntRect spriteRect; //Sprite Object bounds, as set by bounds of texture rectangle
+		sf::Sprite sprite;				//Sprite Object
+		sf::IntRect spriteRect;			//Sprite Texture bounds, as set by bounds of texture rectangle
+		sf::Vector2f position;			// Current Position of Instance
+		sf::FloatRect bounds;			// Global bounds relative to world coordinates
+		float collisionRadius;			// Collision radius
+		sf::CircleShape physicsBounds;
 
-		Game *pGame = nullptr;	//Pointer to game
+		Game* pointerGame = nullptr;			//Pointer to parent game object
+		Drawable* pointerDrawMember = nullptr;	//Pointer to drawable member of this instance
 
 		/// Default Settings ///
-							 ///
-		bool physicsEnabled; /// Does this object interact with other objects physically?
-		bool visible;		 /// Is this object being drawn (passed to the Render function)?
-		bool enabled;		 /// Should this object move/update?
 
-		Vector2f position;
-		FloatRect bounds;
+		bool physicsEnabled;			// Control of whether this instance should trigger physics events
+		bool visible;					// Control of whether or not this instance is added to the Drawables vector
+		bool enabled;					// Control of move/update capabilities
+		Game::Type type;				// Type of Game Object
 
-		void Init(Game::Type type, sf::Texture& tex, Game* pGameIn);
-		void Update();
+
+		/// ///////////////////////////////////////////////////////////
+		///
+		/// Initialisation Function - Initialises the current instance,
+		/// taking object type to set defaults.
+		/// 
+		/// \param type_In - Object type from enum
+		/// \param tex - texture object sprite should have
+		/// \param pointerGame_In - pointer to game object
+		/// 
+		/// ///////////////////////////////////////////////////////////
+		void Init(Game::Type type_In, sf::Texture& tex, Game* pointerGame_In);
+
+		/// ///////////////////////////////////////////////////////////
+		///
+		/// Update function - updates the current instance.
+		/// 
+		/// \param elapsed - Time since last update in seconds
+		/// 
+		/// ///////////////////////////////////////////////////////////
+		void Update(float elapsed);
+
+		/// ///////////////////////////////////////////////////////////
+		///
+		/// Collision detection function - detects if the current 
+		/// instance is colliding with another physics-registered
+		/// instance.
+		/// 
+		/// ///////////////////////////////////////////////////////////
 		bool IsColliding();
+
+		/// ///////////////////////////////////////////////////////////
+		///
+		/// Destroy function - destroys the current instance from
+		/// within.
+		/// 
+		/// ///////////////////////////////////////////////////////////
 		void Destroy();
 	};
 	
@@ -111,9 +192,11 @@ struct Game
 	/// Object Initialisation ///
 	/////////////////////////////
 
-	std::vector <Object*> Physics;
+	Object background;	// Background Object - Static
+	Object ground;		// Ground Object - Dynamic (Paralax)
+	Object player;		// Player Object - Active
 
-	Object background;
-	Object ground;
-	Object player;
+	std::vector <Object*> Objects;		// Vector of objects to keep track of all instances
+	std::vector <Drawable*> Drawables;	// Vector of drawables to pass into the draw function
+	std::vector <Drawable*> Debug;		// Vector of Debug Drawables
 };

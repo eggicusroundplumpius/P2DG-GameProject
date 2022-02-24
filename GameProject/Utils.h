@@ -8,18 +8,26 @@ using namespace sf;
 
 namespace Defaults
 {
-	const sf::VideoMode windowResolution = { 1280, 720 };
-	const Uint32 windowMode = sf::Style::Default;
-	const std::string windowName = "Game Project";
-	const unsigned fontSize = 50u;
-	const Vector2f iconSize = { 32.f, 32.f };
-	const int playerSpeed = 8;
-	const int enemySpeed = 20;
+	const sf::VideoMode windowResolution = { 1280, 720 };	// Default Window Resolution
+	const Uint32 windowMode = sf::Style::Titlebar;			// Default Window Style
+	const std::string windowName = "Game Project";			// Default Window Name
+	const unsigned fpsLimit = 60u;							// Default Frame Rate Limit
+
+	const unsigned fontSize = 4u;				// Default Font Size
+	const Vector2f iconSize = { 32.f, 32.f };	// Default UI Icon Size
+
+	const int playerSpeed = 200;		// Default Player Movement Speed
+	const float thrustPercent = 0.1f;	// Default Thrust Percentage
+	const int enemySpeed = 20;			// Default Enemy Movement Speed
+	const int gravityFactor = 10;		// Default Gravity Factor
+	const int progressionFactor = 3;	// Default speed at which the level gets faster (harder)
+
+	const bool physicsVisibleBoundaries = false;		// Whether to draw physics boundaries
 }
 
 /// ///////////////////////////////////////////////////////////
 ///
-/// Simple datatype for holding x and y dimensions
+/// [DEPRECATED] Simple datatype for holding x and y dimensions
 /// 
 /// ///////////////////////////////////////////////////////////
 struct Dim2D
@@ -56,5 +64,45 @@ struct UtilityBelt
 	bool Load(std::vector<sf::Texture*> const& loadObjects, vector<string> const& loadPaths);
 };
 
+/// ///////////////////////////////////////////////////////////
+///
+/// Takes vectors from major function groups (game and ui),
+/// collates them and draws them with UI being drawn last
+/// (on top).
+/// 
+/// \param uiDrawables - vector of UI element drawable
+/// members
+/// \param gameDrawables - vector of game object drawable
+/// members
+/// \param window - window to draw to
+/// 
+/// ///////////////////////////////////////////////////////////
 void draw(std::vector<sf::Drawable*>& uiDrawables, std::vector<sf::Drawable*>& gameDrawables, sf::RenderWindow& window);
-Vector2f Decay(Vector2f& const inValue, float percent, float interval, float time);
+
+
+/// ///////////////////////////////////////////////////////////
+///
+/// Calculates decay on a set of moving coordinates over time.
+/// 
+/// \param inValue - value to be processed
+/// \param percent - percent to decay by over time
+/// \param interval - time interval to decay over
+/// \param elapsed - time since last update in seconds
+/// 
+/// ///////////////////////////////////////////////////////////
+Vector2f Decay(Vector2f const& inValue, float percent, float interval, float elapsed);
+
+
+/// ///////////////////////////////////////////////////////////
+///
+/// Calculates the distance between two sets of coordinates and
+/// returns a boolean indicating whether that distance is below
+/// the minimum distance.
+/// 
+/// \param position1 - position of one of the coordinates
+/// \param position2 - position of the other coordinates
+/// \param minimumDistance - the minimum distance to return
+/// false
+/// 
+/// ///////////////////////////////////////////////////////////
+bool distanceCheck(Vector2f const& position1, Vector2f const& position2, float minimumDistance);

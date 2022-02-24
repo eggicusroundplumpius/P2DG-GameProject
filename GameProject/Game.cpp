@@ -14,161 +14,219 @@ using namespace std;
 
 /* Core Game Functions */
 
-	/// ///////////////////////////////////////////////////////////
-	///
-	/// Initialisation function - performs many one-time only
-	/// actions, intended to prepare the game to run.
-	/// 
-	/// ///////////////////////////////////////////////////////////
-	void Game::Init(Resource* resource)
+	void Game::Init(Resource* pointerResource_In)
 	{
-		pointerResource = resource;
+		pointerResource = pointerResource_In;
 		background.Init(Type::Static_Environment, pointerResource->texBackground, this);
-		ground.Init(Type::Static_Environment, pointerResource->texGround, this);
+
+		ground.Init(Type::Dyn_Environment, pointerResource->texGround, this);
+		ground.sprite.setPosition(percentBounds.x * 50.f, percentBounds.y * 90.f);
+
 		player.Init(Type::Player, pointerResource->texShip, this);
 	}
-
-	/// ///////////////////////////////////////////////////////////
-	///
-	/// Primary render function: contains cases for main screens 
-	/// available, handles drawing-related functions.
-	/// 
-	/// \param window - Main window object to draw to.
-	/// \param elapsed - elapsed time in seconds since last update.
-	/// 
-	/// ///////////////////////////////////////////////////////////
 	void Game::Update(RenderWindow& window, Event event, float elapsed)
 	{
-		/*switch (Game::currentMode)
-		{
-		case Game::Mode::gamePlay:
-			if (event.text.unicode == keyboard.Up) player.sprite.setPosition(player.sprite.get);
-		}*/
+		for (Object* object : Objects) object->Update(elapsed);
+		percentBounds = { (float)window.getSize().x / 100.f, (float)window.getSize().y / 100.f };
+	}
+	void Game::Render(RenderWindow& window, float elapsed)
+	{
+		windowSize = { (float)window.getSize().x, (float)window.getSize().y };
 
+		if (Defaults::physicsVisibleBoundaries) for (Object* object : Objects)
+		{
+			if (object->physicsEnabled)
+			{
+				bool found = false;
+				object->physicsBounds.setRadius(object->collisionRadius);
+				object->physicsBounds.setOrigin(object->collisionRadius, object->collisionRadius);
+				object->physicsBounds.setOutlineColor(sf::Color::Blue);
+				object->physicsBounds.setOutlineThickness(2.f);
+				object->physicsBounds.setPosition(object->sprite.getPosition());
+				for (Drawable* objectSelected : Drawables)
+					if (&object->physicsBounds == objectSelected) found = true; 
+				if (!found) Drawables.push_back(&object->physicsBounds);
+			}
+		}
+	}
+	void Game::PlayerUpdate(Vector2f const& windowSize, float elapsed)
+	{
 		player.position = player.sprite.getPosition();
 		player.bounds = player.sprite.getGlobalBounds();
-		windowSize = { (float)window.getSize().x, (float)window.getSize().y };
 
 		static Vector2f thrust{ 0,0 };
 
 		if (Keyboard::isKeyPressed(Keyboard::Up) || Keyboard::isKeyPressed(Keyboard::Down))
 		{
 			if (Keyboard::isKeyPressed(Keyboard::Up))
+			{
 				thrust.y = -Defaults::playerSpeed;
+				std::cout << "up arrow\n";
+			}
 			else if (Keyboard::isKeyPressed(Keyboard::Down))
+			{
+				std::cout << "down arrow\n";
 				thrust.y = Defaults::playerSpeed;
+			}
 		}
 
 		player.position += thrust * elapsed;
 		thrust = Decay(thrust, 0.1f, 0.02f, elapsed);
 
-		if (player.position.y < (player.bounds.height * 0.6f))
-			player.position.y = player.bounds.height * 0.6f;
-		if (player.position.y > (windowSize.y - player.bounds.height * 0.6f))
-			player.position.y = windowSize.y - player.bounds.height * 0.6f;
-		if (player.position.x < (player.bounds.width * 0.6f))
-			player.position.x = player.bounds.width * 0.6f;
-		if (player.position.x > (windowSize.x - player.bounds.width * 0.6f))
-			player.position.x = windowSize.x - player.bounds.width * 0.6f;
+		if (player.position.y < (player.bounds.height * 0.1f))
+			player.position.y = player.bounds.height * 0.1f;
+		if (player.position.y > (windowSize.y - player.bounds.height * 1.1f))
+			player.position.y = windowSize.y - player.bounds.height * 1.1f;
 
 		player.sprite.setPosition(player.position);
 	}
-
-	/// ///////////////////////////////////////////////////////////
-	///
-	/// Primary render function: contains cases for main screens 
-	/// available, handles drawing-related functions.
-	/// 
-	/// \param window - Main window object to draw to.
-	/// \param elapsed - elapsed time in seconds since last update.
-	/// 
-	/// ///////////////////////////////////////////////////////////
-	void Game::Render(RenderWindow& window, float elapsed)
+	void Game::changeMode(Game::Mode mode)
 	{
+		switch (mode)
+		{
+		case (Game::Mode::menuRoot):
+			player.physicsEnabled = false;
+			player.visible = false;
+			player.enabled = false;
 
+			for (Game::Object* object : Objects)
+			{
+				if (object->type == Game::Type::Dyn_Environment)
+				{
+					object->physicsEnabled = false;
+					object->visible = false;
+					object->enabled = false;
+				}
+				if (object->type == Game::Type::Enemy)
+				{
+					object->physicsEnabled = false;
+					object->visible = false;
+					object->enabled = false;
+				}
+				if (object->type == Game::Type::Static_Environment)
+				{
+					object->physicsEnabled = false;
+					object->visible = true;
+					object->enabled = true;
+				}
+			}
+			break;
+		case (Game::Mode::gamePlay):
+			player.physicsEnabled = true;
+			player.visible = true;
+			player.enabled = true;
+
+			for (Game::Object* object : Objects)
+			{
+				if (object->type == Game::Type::Dyn_Environment)
+				{
+					object->physicsEnabled = true;
+					object->visible = true;
+					object->enabled = true;
+				}
+				if (object->type == Game::Type::Enemy)
+				{
+					object->physicsEnabled = true;
+					object->visible = true;
+					object->enabled = true;
+				}
+				if (object->type == Game::Type::Static_Environment)
+				{
+					object->physicsEnabled = false;
+					object->visible = true;
+					object->enabled = true;
+				}
+			}
+			break;
+		}
 	}
 
 /* Game Object Functions */
 
-	/// ///////////////////////////////////////////////////////////
-	///
-	/// Initialisation Function - Initialises the current instance,
-	/// taking object type to set defaults.
-	/// 
-	/// \param type - Object type from enum
-	/// \param tex - texture object sprite should have
-	/// \param pGameIn - pointer to game object
-	/// 
-	/// ///////////////////////////////////////////////////////////
-	void Game::Object::Init(Game::Type type, sf::Texture& tex, Game* pGameIn)
+	void Game::Object::Init(Game::Type type_In, sf::Texture& tex, Game* pointerGame_In)
 	{
-		pGame = pGameIn;
+		pointerGame = pointerGame_In;
+		type = type_In;
 
 		sprite.setTexture(tex);
 		switch (type) {
 		case (Type::Player):
-			physicsEnabled = true;
-			visible = true;
+			physicsEnabled = false;
+			visible = false;
 			enabled = false;
 
+			sprite.setPosition(pointerGame->percentBounds.x * 5.f, pointerGame->percentBounds.y * 50.f);
+			std::cout << "Player instance created\n";
+			break;
+
 		case (Type::Enemy):
-			physicsEnabled = true;
-			visible = true;
+			physicsEnabled = false;
+			visible = false;
 			enabled = false;
+
+			std::cout << "Enemy instance created\n";
+			break;
 
 		case (Type::Static_Environment):
 			physicsEnabled = false;
 			visible = true;
 			enabled = true;
 
+			std::cout << "Static Environment instance created\n";
+			break;
+
 		case (Type::Dyn_Environment):
-			physicsEnabled = true;
-			visible = true;
-			enabled = true;
+			physicsEnabled = false;
+			visible = false;
+			enabled = false;
+
+			std::cout << "Dynamic Environment instance created\n";
+			break;
 
 		};
 		spriteRect = sprite.getTextureRect();
-		if (visible) pGame->Drawables.push_back(&this->sprite);
+		if (visible) pointerGame->Drawables.push_back(&this->sprite);
+		pointerGame->Objects.push_back(this);
 	}
-
-	/// ///////////////////////////////////////////////////////////
-	///
-	/// Update function - updates the current instance.
-	/// 
-	/// ///////////////////////////////////////////////////////////
-	void Game::Object::Update()
+	void Game::Object::Update(float elapsed)
 	{
-		if (!visible)
-			for (unsigned i = 0; i < pGame->Drawables.size(); i++)
-				if (pGame->Drawables[i] == &this->sprite) pGame->Drawables.erase(pGame->Drawables.begin() + i);
-	}
+		if (visible)
+		{
+			bool notFound = true;
+			for (Drawable* object : pointerGame->Drawables)
+			{
+				if (object == &this->sprite) {
+					notFound = false; break; }
+			}
+			if (notFound) pointerGame->Drawables.push_back(&this->sprite);
+		}
+		else
+			for (unsigned i = 0; i < pointerGame->Drawables.size(); i++)
+				if (pointerGame->Drawables[i] == &this->sprite) pointerGame->Drawables.erase(pointerGame->Drawables.begin() + i);
 
-	/// ///////////////////////////////////////////////////////////
-	///
-	/// Collision detection function - detects if the current 
-	/// instance is colliding with another physics-registered
-	/// instance.
-	/// 
-	/// ///////////////////////////////////////////////////////////
+		if (enabled)
+		{
+			position = sprite.getPosition();
+			if (type == Game::Type::Player) pointerGame->PlayerUpdate(pointerGame->windowSize, elapsed);
+		}
+	}
 	bool Game::Object::IsColliding()
 	{
 		if (!physicsEnabled) return false;
 		else
 		{
-			return true;
+			for (Object* object : pointerGame->Objects)
+				if (distanceCheck(this->position, object->position, collisionRadius))
+				{
+					std::cout << "Colliding...\n";
+					return true;
+				};
+			return false;
 		}
 	}
-
-	/// ///////////////////////////////////////////////////////////
-	///
-	/// Destroy function - destroys the current instance from
-	/// within.
-	/// 
-	/// ///////////////////////////////////////////////////////////
 	void Game::Object::Destroy()
 	{
 		enabled = false;
 		visible = false;
-		this->Update();
 		delete this;
 	}
