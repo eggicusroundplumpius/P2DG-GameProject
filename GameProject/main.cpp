@@ -1,9 +1,10 @@
 #include "UI.h"
+#include "Game.h"
 
 using namespace sf;
 using namespace std;
 
-void Init(Resource* resource, UtilityBelt& utils, Game& game, UI& ui);
+void Init(Resource& resource, UtilityBelt& utils, Game& game, UI& ui);
 void Update(RenderWindow& window, Game& game, UI& ui, Event& event, float elapsed);
 void Render(RenderWindow& window, Game& game, UI& ui, float elapsed);
 
@@ -18,7 +19,7 @@ int main()
 	window.setFramerateLimit(Defaults::fpsLimit);
 
 	//Root initialisation
-	Init(&resource, utils, game, ui);
+	Init(resource, utils, game, ui);
 
 	float elapsed;		// Time elapsed since last update
 	Clock mainClock;	// Main program clock
@@ -38,15 +39,15 @@ int main()
 	return 0;
 }
 
-void Init(Resource* resource, UtilityBelt& utils, Game& game, UI& ui)
+void Init(Resource& resource, UtilityBelt& utils, Game& game, UI& ui)
 {
 	//Load resources
-	utils.Load(resource->loadFonts, resource->loadFontPaths);
-	utils.Load(resource->loadTextures, resource->loadTexturePaths);
+	utils.Load(resource.loadFonts, resource.loadFontPaths);
+	utils.Load(resource.loadTextures, resource.loadTexturePaths);
 	
 	//Initialise Major Parent Objects
-	ui.Init(resource, &game);
-	game.Init(resource);
+	ui.Init(&resource, &game, &utils);
+	game.Init(&resource);
 }
 void Update(RenderWindow& window, Game& game, UI& ui, Event& event, float elapsed)
 {

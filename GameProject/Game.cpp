@@ -17,12 +17,11 @@ using namespace std;
 	void Game::Init(Resource* pointerResource_In)
 	{
 		pointerResource = pointerResource_In;
-		background.Init(Type::Static_Environment, pointerResource->texBackground, this);
 
+		background.Init(Type::Static_Environment, pointerResource->texBackground, this);
 		ground.Init(Type::Dyn_Environment, pointerResource->texGround, this);
 		ground.sprite.setPosition(percentBounds.x * 50.f, percentBounds.y * 90.f);
-
-		player.Init(Type::Player, pointerResource->texShip, this);
+		player.Init(Type::Player, pointerResource->texPlayer, this);
 	}
 	void Game::Update(RenderWindow& window, Event event, float elapsed)
 	{
@@ -71,7 +70,9 @@ using namespace std;
 		}
 
 		player.position += thrust * elapsed;
-		thrust = Decay(thrust, 0.1f, 0.02f, elapsed);
+		thrust = Decay(thrust, 0.1f, 0.1f, elapsed);
+		Vector2f gravity = { 0, Defaults::gravityFactor };
+		thrust += gravity;
 
 		if (player.position.y < (player.bounds.height * 0.1f))
 			player.position.y = player.bounds.height * 0.1f;
@@ -80,11 +81,11 @@ using namespace std;
 
 		player.sprite.setPosition(player.position);
 	}
-	void Game::changeMode(Game::Mode mode)
+	void Game::changeMode(gameMode mode)
 	{
 		switch (mode)
 		{
-		case (Game::Mode::menuRoot):
+		case (gameMode::menuRoot):
 			player.physicsEnabled = false;
 			player.visible = false;
 			player.enabled = false;
@@ -111,7 +112,7 @@ using namespace std;
 				}
 			}
 			break;
-		case (Game::Mode::gamePlay):
+		case (gameMode::gamePlay):
 			player.physicsEnabled = true;
 			player.visible = true;
 			player.enabled = true;
@@ -148,6 +149,7 @@ using namespace std;
 		pointerGame = pointerGame_In;
 		type = type_In;
 
+		//Vector2f scale = { pointerGame->windowSize.x / 1000 , pointerGame->windowSize.x / 1000 };
 		sprite.setTexture(tex);
 		switch (type) {
 		case (Type::Player):
@@ -155,7 +157,8 @@ using namespace std;
 			visible = false;
 			enabled = false;
 
-			sprite.setPosition(pointerGame->percentBounds.x * 5.f, pointerGame->percentBounds.y * 50.f);
+			sprite.setPosition(pointerGame->percentBounds.x * 50.f, pointerGame->percentBounds.y * 50.f);
+			sprite.setScale({3, 3});
 			std::cout << "Player instance created\n";
 			break;
 

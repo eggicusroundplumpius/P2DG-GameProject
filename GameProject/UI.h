@@ -14,7 +14,7 @@ struct UI
 	/// object
 	/// 
 	/// ///////////////////////////////////////////////////////////
-	void Init(Resource* pointerResource_In, Game* pointerGame_In);
+	void Init(Resource* pointerResource_In, Game* pointerGame_In, UtilityBelt* pointerUtils_In);
 
 	/// ///////////////////////////////////////////////////////////
 	///
@@ -28,7 +28,7 @@ struct UI
 	/// to show
 	/// 
 	/// ///////////////////////////////////////////////////////////
-	void Update(RenderWindow& window, Event event, Game::Mode const& mode);
+	void Update(RenderWindow& window, Event event, gameMode const& mode);
 
 	/// ///////////////////////////////////////////////////////////
 	///
@@ -47,12 +47,13 @@ struct UI
 	/// \param mode - mode to change to.
 	/// 
 	/// ///////////////////////////////////////////////////////////
-	void changeMode(Game::Mode const& mode);
+	void changeMode(gameMode const& mode, UtilityBelt* pointerUtils);
 
 	bool modeChanged;			// Indicates whether the current mode has changed to certain functions
 	Vector2f percentBounds;		// Represents a single percent of the window's resolution - useful for UI placement
 	Resource* pointerResource;	// Pointer to root Resource object
 	Game* pointerGame;
+	UtilityBelt* pointerUtils;
 
 	enum class windowMode {windowed, borderless, fullscreen};	// Window Mode, indicating the type of window the game should run in
 	enum class elementType {button, textbox, picturebox};		// Element type, indicating a derrived type of UI Element
@@ -145,6 +146,7 @@ struct UI
 		//elementType type = elementType::button;
 		Drawable* pointerDrawMember = &this->text;
 	};
+
 	/// ///////////////////////////////////////////////////////////
 	///
 	/// TextBox type, for objects that should behave as textboxes.
@@ -157,6 +159,7 @@ struct UI
 		//elementType type = elementType::textbox;
 		//Drawable* pointerDrawMember = &this->text;
 	};
+
 	/// ///////////////////////////////////////////////////////////
 	///
 	/// PictureBox type, for objects that should behave as
@@ -187,3 +190,19 @@ struct UI
 	std::vector <Drawable*> Drawables;	// Vector for all visible drawable members of all UI Element instances
 	std::vector <Element*> Elements;	// Vector for all UI Element instances
 };
+
+class UI_Base
+{
+
+};
+
+class UI_Controller
+{
+
+};
+
+class UI_Frame : UI_Base, UI_Controller
+{
+
+};
+

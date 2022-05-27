@@ -2,20 +2,21 @@
 
 /* Core UI Functions */
 
-	void UI::Init(Resource* pointerResource_In, Game* pointerGame_In)
+	void UI::Init(Resource* pointerResource_In, Game* pointerGame_In, UtilityBelt* pointerUtils_In)
 	{
 		pointerResource = pointerResource_In;
 		pointerGame = pointerGame_In;
+		pointerUtils = pointerUtils_In;
 		modeChanged = true;
 	}
-	void UI::Update(RenderWindow& window, Event event, Game::Mode const& mode)
+	void UI::Update(RenderWindow& window, Event event, gameMode const& mode)
 	{
 		percentBounds = { (float)window.getSize().x / 100.f, (float)window.getSize().y / 100.f }; // Set percentage values for current screen size
 		if (modeChanged)	// If the screen mode has changed..
 		{
 			Elements.clear();	// Clear the UI elements on screen
 			switch (mode) {
-			case (Game::Mode::menuRoot):	// If the screen has changed to the root menu..
+			case (gameMode::menuRoot):	// If the screen has changed to the root menu..
 
 				//Title TextBox
 				title.Init(this, &title);													//Initialise the title (add to elements)
@@ -59,7 +60,7 @@
 				modeChanged = false;
 				break;
 
-			case (Game::Mode::menuOptions):
+			case (gameMode::menuOptions):
 				
 				//Title TextBox
 				title.Init(this, &title);
@@ -73,7 +74,7 @@
 
 				break;
 
-			case (Game::Mode::gamePlay):	// If the screen has changed to gameplay...
+			case (gameMode::gamePlay):	// If the screen has changed to gameplay...
 
 				//Health Text
 				health.Init(this, &health);			//Initialise health text (add it to elements)
@@ -145,9 +146,9 @@
 			}
 		}
 	}
-	void UI::changeMode(Game::Mode const& mode)
+	void UI::changeMode(gameMode const& mode, UtilityBelt* pointerUtils)
 	{
-		modeChanged = true;
+		pointerUtils->modeChanged = true;
 		pointerGame->changeMode(mode);
 	}
 

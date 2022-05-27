@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Struct Name="Game">
+    <Position X="0.5" Y="0.5" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Game::Type">
+        <TypeIdentifier>
+          <NewMemberFileName>Game.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Struct Name="Game::Object">
+        <TypeIdentifier>
+          <NewMemberFileName>Game.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAQSAAEAAAAAAIAgAAAIAAAAAAMAACQLgBACAAAAIAA=</HashCode>
+      <FileName>Game.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="UI">
+    <Position X="3" Y="0.5" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="UI::windowMode">
+        <TypeIdentifier>
+          <NewMemberFileName>UI.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="UI::elementType">
+        <TypeIdentifier>
+          <NewMemberFileName>UI.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Struct Name="UI::Element">
+        <TypeIdentifier>
+          <NewMemberFileName>UI.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="UI::Interactable">
+        <TypeIdentifier>
+          <NewMemberFileName>UI.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="UI::Button">
+        <TypeIdentifier>
+          <NewMemberFileName>UI.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="UI::TextBox">
+        <TypeIdentifier>
+          <NewMemberFileName>UI.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="UI::PictureBox">
+        <TypeIdentifier>
+          <NewMemberFileName>UI.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AEQCAAkAQAAJAAEAAAAYAAABAAGAAAACgBACACAAIAg=</HashCode>
+      <FileName>UI.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Dim2D">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Struct Name="Dim2D::integer" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Utils.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Dim2D::real" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Utils.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Utils.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="FontType">
+    <Position X="10.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAACAAAAAAAgAAEAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Utils.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Resource">
+    <Position X="5.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAABAAAAABAABASCAAAAQAAIAAAAAAAGDBAAAA=</HashCode>
+      <FileName>Utils.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="UtilityBelt">
+    <Position X="7.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Utils.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="gameMode">
+    <Position X="10.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAQAACAEAAABAAAAAAAA=</HashCode>
+      <FileName>Utils.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

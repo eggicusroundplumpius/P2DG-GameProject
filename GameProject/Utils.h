@@ -25,6 +25,8 @@ namespace Defaults
 	const bool physicsVisibleBoundaries = false;		// Whether to draw physics boundaries
 }
 
+enum class gameMode { menuRoot, menuOptions, menuAbout, gamePlay, gamePause }; //Current Display Mode
+
 /// ///////////////////////////////////////////////////////////
 ///
 /// [DEPRECATED] Simple datatype for holding x and y dimensions
@@ -52,6 +54,63 @@ struct FontType
 	sf::Font LightItalic;
 };
 
+struct Resource
+{
+	//Texture Objects
+
+	sf::Texture texBackground;
+	sf::Texture texGround;
+	sf::Texture texPlayer;
+	sf::Texture texEnemy;
+	sf::Texture iconBack;
+	sf::Texture iconPause;
+	sf::Texture iconMusic;
+	sf::Texture iconMute;
+	sf::Texture iconExit;
+
+	//Font Objects
+
+	FontType DSEG14Classic;
+	FontType CondenBitmap;
+
+	//Loading Paths
+
+	const std::vector <sf::Texture*> loadTextures{ &texBackground, &texGround, &texPlayer, &texEnemy,
+													&iconBack, &iconPause, &iconMusic, &iconMute, &iconExit };
+	const vector<string> loadTexturePaths =
+	{
+		"data/tex/background.png",
+		"data/tex/ground.png",
+		"data/tex/player.png",
+		"data/tex/enemy.png",
+		"data/tex/icon/back.png",
+		"data/tex/icon/pause.png",
+		"data/tex/icon/music.png",
+		"data/tex/icon/mute.png",
+		"data/tex/icon/exit.png"
+	};
+	const std::vector <FontType*> loadFonts{ &DSEG14Classic, &CondenBitmap };
+	const vector<vector<string>> loadFontPaths = {
+		{ //DSEG14 Classic
+			"data/fonts/DSEG14Classic-Regular.ttf",
+			"data/fonts/DSEG14Classic-Italic.ttf",
+			"data/fonts/DSEG14Classic-Bold.ttf",
+			"data/fonts/DSEG14Classic-BoldItalic.ttf",
+			"data/fonts/DSEG14Classic-Light.ttf",
+			"data/fonts/DSEG14Classic-LightItalic.ttf"
+		},
+		{ //CondenBitmap
+			"data/fonts/CondenBitmap.otf",
+			"",
+			"",
+			"",
+			"",
+			""
+		}
+	};
+};
+
+
 /// ///////////////////////////////////////////////////////////
 ///
 /// Holds the utility functions, such as Loading and filesystem
@@ -62,6 +121,8 @@ struct UtilityBelt
 {
 	bool Load(std::vector<FontType*> const& loadObjects, vector<vector<string>> const& loadPaths);
 	bool Load(std::vector<sf::Texture*> const& loadObjects, vector<string> const& loadPaths);
+
+	bool modeChanged;
 };
 
 /// ///////////////////////////////////////////////////////////
