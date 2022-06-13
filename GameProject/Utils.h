@@ -25,7 +25,8 @@ namespace Defaults
 	const bool physicsVisibleBoundaries = false;		// Whether to draw physics boundaries
 }
 
-enum class gameMode { menuRoot, menuOptions, menuAbout, gamePlay, gamePause }; //Current Display Mode
+enum class gameMode { menuRoot, menuOptions, menuAbout, gamePlay, gamePause };		// Available Screens and Menu Configurations
+enum class windowMode { windowed, borderless, fullscreen };							// Available Window Display Modes
 
 /// ///////////////////////////////////////////////////////////
 ///
@@ -34,8 +35,8 @@ enum class gameMode { menuRoot, menuOptions, menuAbout, gamePlay, gamePause }; /
 /// ///////////////////////////////////////////////////////////
 struct Dim2D
 {
-	struct integer { int x, y; };	//Integer Type
-	struct real { float x, y; };	//Real (float) Type
+	struct integer { int x, y; };	// Integer Type
+	struct real { float x, y; };	// Real (float) Type
 };
 
 /// ///////////////////////////////////////////////////////////
@@ -56,7 +57,7 @@ struct FontType
 
 struct Resource
 {
-	//Texture Objects
+	// Texture Objects
 
 	sf::Texture texBackground;
 	sf::Texture texGround;
@@ -68,12 +69,12 @@ struct Resource
 	sf::Texture iconMute;
 	sf::Texture iconExit;
 
-	//Font Objects
+	// Font Objects
 
 	FontType DSEG14Classic;
 	FontType CondenBitmap;
 
-	//Loading Paths
+	// Loading Paths
 
 	const std::vector <sf::Texture*> loadTextures{ &texBackground, &texGround, &texPlayer, &texEnemy,
 													&iconBack, &iconPause, &iconMusic, &iconMute, &iconExit };
@@ -91,7 +92,7 @@ struct Resource
 	};
 	const std::vector <FontType*> loadFonts{ &DSEG14Classic, &CondenBitmap };
 	const vector<vector<string>> loadFontPaths = {
-		{ //DSEG14 Classic
+		{ // DSEG14 Classic
 			"data/fonts/DSEG14Classic-Regular.ttf",
 			"data/fonts/DSEG14Classic-Italic.ttf",
 			"data/fonts/DSEG14Classic-Bold.ttf",
@@ -99,7 +100,7 @@ struct Resource
 			"data/fonts/DSEG14Classic-Light.ttf",
 			"data/fonts/DSEG14Classic-LightItalic.ttf"
 		},
-		{ //CondenBitmap
+		{ // CondenBitmap
 			"data/fonts/CondenBitmap.otf",
 			"",
 			"",

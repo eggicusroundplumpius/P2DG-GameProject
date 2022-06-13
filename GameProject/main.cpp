@@ -3,6 +3,7 @@
 
 using namespace sf;
 using namespace std;
+using namespace Defaults;
 
 void Init(Resource& resource, UtilityBelt& utils, Game& game, UI& ui);
 void Update(RenderWindow& window, Game& game, UI& ui, Event& event, float elapsed);
@@ -10,16 +11,16 @@ void Render(RenderWindow& window, Game& game, UI& ui, float elapsed);
 
 int main()
 {
-	UI ui;				// Root UI Object
-	Game game;			// Root Game Object
-	Resource resource;	// Root Resource Object
 	UtilityBelt utils;	// Root UtilityBelt Object
+	Resource resource;	// Root Resource Object
+	Game game;			// Root Game Object
+	UI_Frame ui_frame;				// Root UI Object
 
-	RenderWindow window(Defaults::windowResolution, Defaults::windowName, Defaults::windowMode);	// Main RenderWindow
-	window.setFramerateLimit(Defaults::fpsLimit);
+	RenderWindow window(windowResolution, windowName, windowMode);	// Main RenderWindow
+	window.setFramerateLimit(fpsLimit);
 
 	//Root initialisation
-	Init(resource, utils, game, ui);
+	Init(resource, utils, game, ui_frame);
 
 	float elapsed;		// Time elapsed since last update
 	Clock mainClock;	// Main program clock
@@ -32,14 +33,14 @@ int main()
 
 		Event event;
 
-		Update(window, game, ui, event, elapsed);
-		Render(window, game, ui, elapsed);
+		Update(window, game, ui_frame, event, elapsed);
+		Render(window, game, ui_frame, elapsed);
 	}
 
 	return 0;
 }
 
-void Init(Resource& resource, UtilityBelt& utils, Game& game, UI& ui)
+void Init(Resource& resource, UtilityBelt& utils, Game& game, UI_Frame& ui)
 {
 	//Load resources
 	utils.Load(resource.loadFonts, resource.loadFontPaths);
@@ -49,7 +50,7 @@ void Init(Resource& resource, UtilityBelt& utils, Game& game, UI& ui)
 	ui.Init(&resource, &game, &utils);
 	game.Init(&resource);
 }
-void Update(RenderWindow& window, Game& game, UI& ui, Event& event, float elapsed)
+void Update(RenderWindow& window, Game& game, UI_Frame& ui, Event& event, float elapsed)
 {
 	//If an event to close the window is triggered, close the window
 	while (window.pollEvent(event)) if (event.type == Event::Closed) window.close();
@@ -59,7 +60,7 @@ void Update(RenderWindow& window, Game& game, UI& ui, Event& event, float elapse
 	ui.Update(window, event, game.currentMode);
 	game.Update(window, event, elapsed);
 }
-void Render(RenderWindow& window, Game& game, UI& ui, float elapsed)
+void Render(RenderWindow& window, Game& game, UI_Frame& ui, float elapsed)
 {
 	//Run Render tasks for Major Parent Objects
 	ui.Render(window);
