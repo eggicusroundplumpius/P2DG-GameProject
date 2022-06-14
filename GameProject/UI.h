@@ -2,6 +2,10 @@
 #include "Utils.h"
 #include "Game.h"
 
+enum class elementType { textbox, picturebox, button };
+
+class UI_Element;
+
 class UI_Frame
 {
 public:
@@ -28,7 +32,7 @@ public:
 	/// to show
 	/// 
 	/// ///////////////////////////////////////////////////////////
-	void Update(RenderWindow& window, Event event, gameMode const& mode);
+	void Update(RenderWindow& window, Event event);
 	/// ///////////////////////////////////////////////////////////
 	///
 	/// Render function - intended to collate all elements visible
@@ -37,14 +41,18 @@ public:
 	/// \param window - window to draw to
 	/// 
 	/// ///////////////////////////////////////////////////////////
-	void Render(RenderWindow& window);
+	std::vector<Drawable*> Render();
 
-	std::vector <UI_Element*> elements;		// Vector for all UI Element instances
+	std::vector<UI_Element*> elements;		// Vector for all UI Element instances
 	Vector2f percentBounds;					// Represents a single percent of the window's resolution - useful for UI placement
 
-private:
-	sf::FloatRect frame;
+protected:
 	std::vector <Drawable*> drawables;		// Vector for all visible drawable members of all UI Element instances
+
+private:
+	sf::FloatRect frame;					// Size of frame
+	int selectedInteractable;				// Vector index of interactable element currently selected
+
 	Resource* pointerResource;				// Pointer to root Resource object
 	Game* pointerGame;						// Pointer to root Game object
 	UtilityBelt* pointerUtils;				// Pointer to root Utility object
@@ -54,17 +62,18 @@ class UI_Element // Analagous to Base UI (see diagram in book)
 {
 public:
 	void Init(UI_Frame& parentFramePointer);
+	void RenderUpdate(std::vector<sf::Drawable*>& drawables);
 
 	sf::FloatRect globalBounds;
-	sf::Vector2i dimensions;					// Element Global Dimensions
 	bool visible, enabled;						// Should this be drawable, and updatable?
+	elementType type;							// What type is this element? (I know, I'm lazy and this isn't that elegant)
 
 private:
 	std::vector<Drawable*> drawable_Subelements;	// Subelements (text, rectangles, compound shapes, etc.) that can be drawn
 	UI_Frame* parentFramePointer;					// Pointer to parent UI object
 };
 
-class UI_Interactable
+class UI_Interactable	// Interactable class for any elements that can trigger events
 {
 public:
 	sf::Sprite customFrame;		// Custom frame to hold a sprite and/or animation, if necessary

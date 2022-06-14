@@ -26,7 +26,6 @@ namespace Defaults
 }
 
 enum class gameMode { menuRoot, menuOptions, menuAbout, gamePlay, gamePause };		// Available Screens and Menu Configurations
-enum class windowMode { windowed, borderless, fullscreen };							// Available Window Display Modes
 
 /// ///////////////////////////////////////////////////////////
 ///
@@ -139,7 +138,7 @@ struct UtilityBelt
 /// \param window - window to draw to
 /// 
 /// ///////////////////////////////////////////////////////////
-void draw(std::vector<sf::Drawable*>& uiDrawables, std::vector<sf::Drawable*>& gameDrawables, sf::RenderWindow& window);
+void draw(std::vector<sf::Drawable*> uiDrawables, std::vector<sf::Drawable*>& gameDrawables, sf::RenderWindow& window);
 
 
 /// ///////////////////////////////////////////////////////////

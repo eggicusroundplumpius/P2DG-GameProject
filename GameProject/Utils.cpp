@@ -4,7 +4,7 @@
 
 #include "Utils.h"
 
-void draw(std::vector<sf::Drawable*>& uiDrawables, std::vector<sf::Drawable*>& gameDrawables, sf::RenderWindow& window)
+void draw(std::vector<sf::Drawable*> uiDrawables, std::vector<sf::Drawable*>& gameDrawables, sf::RenderWindow& window)
 {
 	std::vector<sf::Drawable*> collatedDrawables;
 
@@ -38,7 +38,6 @@ bool UtilityBelt::Load(std::vector<FontType*> const& loadObjects, vector<vector<
 		{
 			std::cout << "Attempting to load " << fontLib[0] << "\n";	//Regular
 			loadObjects[i]->Regular.loadFromFile(fontLib[0]);
-			//loadObjects[i]->Regular.
 		}
 		else missingCount++;
 		

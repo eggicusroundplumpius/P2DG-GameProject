@@ -1,6 +1,6 @@
 #include "UI.h"
 
-/* Core UI Functions */
+/* UI Frame Functions */
 
 void UI_Frame::Init(Resource* pointerResource_In, Game* pointerGame_In, UtilityBelt* pointerUtils_In)
 {
@@ -8,45 +8,25 @@ void UI_Frame::Init(Resource* pointerResource_In, Game* pointerGame_In, UtilityB
 	pointerGame = pointerGame_In;
 	pointerUtils = pointerUtils_In;
 }
-void UI_Frame::Update(RenderWindow& window, Event event, gameMode const& mode)
+void UI_Frame::Update(RenderWindow& window, Event event)
 {
-	percentBounds = { (float)window.getSize().x / 100.f, (float)window.getSize().y / 100.f }; // Set percentage values for current screen size
+	percentBounds = { (float)window.getSize().x / 100.f, 
+					(float)window.getSize().y / 100.f };					// Set percentage values for current screen size
 
-	health.text.setString("Health: " + to_string(pointerGame->lives));
+	drawables.clear();														// Clear the drawable object list, so it can be rewritten with updated information
+	for (UI_Element* element : elements) element->RenderUpdate(drawables);	// Update the render information for each element (visibility, etc.)
+
+	/*health.text.setString("Health: " + to_string(pointerGame->lives));
 	health.globalBounds = health.text.getGlobalBounds();
 	health.text.setPosition((percentBounds.x * 2.f), (percentBounds.y * 2.f));
 
 	score.text.setString("Score: " + to_string(pointerGame->score));
 	score.globalBounds = score.text.getGlobalBounds();
-	score.text.setPosition((percentBounds.x * 2.f), (percentBounds.y * 2.f) + score.globalBounds.height * 1.2);
-
+	score.text.setPosition((percentBounds.x * 2.f), (percentBounds.y * 2.f) + score.globalBounds.height * 1.2);*/
 }
-void UI_Frame::Render(RenderWindow& window)
+std::vector<Drawable*> UI_Frame::Render()
 {
-	Drawables.clear();
-	for (Element* element : Elements)
-	{
-		if (element->visible)
-		{
-			switch (element->type) 
-			{
-			case (elementType::button):
-				Drawables.push_back(&element->Frame);
-				Drawables.push_back(element->pointerDrawMember);
-				break;
-				
-			case (elementType::textbox):
-				Drawables.push_back(&element->Frame);
-				Drawables.push_back(element->pointerDrawMember);
-				break;
-				
-			case (elementType::picturebox):
-				Drawables.push_back(&element->Frame);
-				Drawables.push_back(element->pointerDrawMember);
-				break;
-			}
-		}
-	}
+	return drawables;
 }
 
 /* Element Instance Functions */
@@ -55,6 +35,14 @@ void UI_Element::Init(UI_Frame& parentFramePointer)
 {
 	this->parentFramePointer = &parentFramePointer;
 	parentFramePointer.elements.push_back(this);
+}
+void UI_Element::RenderUpdate(std::vector<sf::Drawable*>& drawables)
+{
+	if (visible)
+	{
+		for (Drawable* subelement : drawable_Subelements)
+		drawables.push_back(subelement);
+	}
 }
 
 /* Interactable Instance Functions */

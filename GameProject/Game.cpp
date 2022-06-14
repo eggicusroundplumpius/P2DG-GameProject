@@ -71,7 +71,7 @@ using namespace std;
 
 		player.position += thrust * elapsed;
 		thrust = Decay(thrust, 0.1f, 0.1f, elapsed);
-		Vector2f gravity = { 0, Defaults::gravityFactor };
+		Vector2f gravity = { 0.f, (float)Defaults::gravityFactor };
 		thrust += gravity;
 
 		if (player.position.y < (player.bounds.height * 0.1f))
