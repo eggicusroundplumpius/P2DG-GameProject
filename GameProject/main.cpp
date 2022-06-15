@@ -11,13 +11,18 @@ void Render(RenderWindow& window, Game& game, UI_Frame& ui, float elapsed);
 
 int main()
 {
+	RenderWindow window(windowResolution, windowName, windowMode);	// Main RenderWindow
+	window.setFramerateLimit(fpsLimit);
+
 	UtilityBelt utils;	// Root UtilityBelt Object
 	Resource resource;	// Root Resource Object
 	Game game;			// Root Game Object
 	UI_Frame ui_frame;	// Root UI Object
 
-	RenderWindow window(windowResolution, windowName, windowMode);	// Main RenderWindow
-	window.setFramerateLimit(fpsLimit);
+	TextBox health_text;
+	health_text.Init(ui_frame, Vector2f{ windowResolution.width / 10.f, windowResolution.height / 5.f});
+	Button pause_button;
+	pause_button.Init(ui_frame, Vector2f{ windowResolution.width / 10.f, windowResolution.height / 5.f });
 
 	// Root initialisation
 	Init(resource, utils, game, ui_frame);

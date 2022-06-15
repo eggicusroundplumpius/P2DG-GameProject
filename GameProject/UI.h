@@ -61,11 +61,15 @@ private:
 class UI_Element // Analagous to Base UI (see diagram in book)
 {
 public:
-	void Init(UI_Frame& parentFramePointer);
+	virtual void Init(
+		UI_Frame& parentFramePointer,
+		Vector2f bounds = { Defaults::windowResolution.width / 2.f, Defaults::windowResolution.height / 2.f },
+		bool visible = true,
+		bool enabled = true);
 	void RenderUpdate(std::vector<sf::Drawable*>& drawables);
 
 	sf::FloatRect globalBounds;
-	bool visible, enabled;						// Should this be drawable, and updatable?
+	bool visible, enabled = true;				// Should this be drawable, and updatable?
 	elementType type;							// What type is this element? (I know, I'm lazy and this isn't that elegant)
 
 private:
@@ -76,8 +80,6 @@ private:
 class UI_Interactable	// Interactable class for any elements that can trigger events
 {
 public:
-	sf::Sprite customFrame;		// Custom frame to hold a sprite and/or animation, if necessary
-
 	/// <summary>
 	/// Update function - should be called every general update
 	/// </summary>
@@ -109,18 +111,29 @@ private:
 	void* functionPointer = nullptr;	// Pointer to function that will trigger as a result of interaction
 };
 
-class Button : public UI_Element, UI_Interactable
+struct TextBox : UI_Element
+{
+	virtual void Init(
+		UI_Frame& parentFramePointer,
+		Vector2f bounds = { Defaults::windowResolution.width / 2.f, Defaults::windowResolution.height / 2.f },
+		bool visible = true,
+		bool enabled = true);
+
+	sf::Text text;
+	sf::RectangleShape box;
+
+	elementType type = elementType::textbox;
+};
+struct Button : UI_Element, UI_Interactable
 {
 	sf::Text text;
 	sf::RectangleShape rectangle;
-};
+	sf::Sprite image;
 
-class TextBox : public UI_Element
-{
-	sf::Text text;
+	elementType type = elementType::button;
 };
-
-class PictureBox : public UI_Element
+struct PictureBox : UI_Element
 {
 	sf::Sprite sprite;
+	elementType type = elementType::picturebox;
 };

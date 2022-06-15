@@ -31,11 +31,15 @@ std::vector<Drawable*> UI_Frame::Render()
 
 /* Element Instance Functions */
 
-void UI_Element::Init(UI_Frame& parentFramePointer)
+void UI_Element::Init(UI_Frame& parentFramePointer, Vector2f bounds, bool visible, bool enabled)
 {
 	this->parentFramePointer = &parentFramePointer;
 	parentFramePointer.elements.push_back(this);
+
+	visible = this->visible;
+	enabled = this->enabled;
 }
+
 void UI_Element::RenderUpdate(std::vector<sf::Drawable*>& drawables)
 {
 	if (visible)
@@ -61,5 +65,11 @@ void UI_Interactable::Hold(sf::Mouse::Button const& mouseButton)
 }
 void UI_Interactable::Drag(sf::Mouse::Button const& mouseButton)
 {
+
+}
+
+void TextBox::Init(UI_Frame& parentFramePointer, Vector2f bounds, bool visible, bool enabled) 
+{
+	UI_Element::Init(parentFramePointer, bounds, visible, enabled);
 
 }
