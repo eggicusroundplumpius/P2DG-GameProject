@@ -46,20 +46,20 @@ public:
 	std::vector<UI_Element*> elements;		// Vector for all UI Element instances
 	Vector2f percentBounds;					// Represents a single percent of the window's resolution - useful for UI placement
 
-protected:
 	std::vector <Drawable*> drawables;		// Vector for all visible drawable members of all UI Element instances
+protected:
+	Resource* pointerResource;				// Pointer to root Resource object
+	Game* pointerGame;						// Pointer to root Game object
+	UtilityBelt* pointerUtils;				// Pointer to root Utility object
 
 private:
 	sf::FloatRect frame;					// Size of frame
 	int selectedInteractable;				// Vector index of interactable element currently selected
-
-	Resource* pointerResource;				// Pointer to root Resource object
-	Game* pointerGame;						// Pointer to root Game object
-	UtilityBelt* pointerUtils;				// Pointer to root Utility object
 };
 
 class UI_Element // Analagous to Base UI (see diagram in book)
 {
+	friend class UI_Frame;
 public:
 	virtual void Init(
 		UI_Frame& parentFramePointer,
@@ -69,12 +69,17 @@ public:
 	void RenderUpdate(std::vector<sf::Drawable*>& drawables);
 
 	sf::FloatRect globalBounds;
-	bool visible, enabled = true;				// Should this be drawable, and updatable?
-	elementType type;							// What type is this element? (I know, I'm lazy and this isn't that elegant)
-
-private:
+	bool visible, enabled = true;					// Should this be drawable, and updatable?
+	elementType type;								// What type is this element? (I know, I'm lazy and this isn't that elegant)
 	std::vector<Drawable*> drawable_Subelements;	// Subelements (text, rectangles, compound shapes, etc.) that can be drawn
-	UI_Frame* parentFramePointer;					// Pointer to parent UI object
+
+	UI_Frame* parentFramePointer;				// Pointer to parent UI object
+protected:
+	Resource* pointerResource;					// Pointer to root Resource object
+	Game* pointerGame;							// Pointer to root Game object
+	UtilityBelt* pointerUtils;					// Pointer to root Utility object
+	
+
 };
 
 class UI_Interactable	// Interactable class for any elements that can trigger events

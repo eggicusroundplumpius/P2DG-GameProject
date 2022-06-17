@@ -6,12 +6,8 @@
 
 void draw(std::vector<sf::Drawable*> uiDrawables, std::vector<sf::Drawable*>& gameDrawables, sf::RenderWindow& window)
 {
-	std::vector<sf::Drawable*> collatedDrawables;
-
-	for (Drawable* i : gameDrawables) collatedDrawables.push_back(i);
-	for (Drawable* i : uiDrawables) collatedDrawables.push_back(i);
-
-	for (Drawable* object : collatedDrawables) window.draw(*object);
+	for (Drawable* gameDrawable : gameDrawables) window.draw(*gameDrawable);
+	for (Drawable* uiDrawable : uiDrawables) window.draw(*uiDrawable);
 }
 Vector2f Decay(Vector2f const& inValue, float percent, float interval, float elapsed) 
 {

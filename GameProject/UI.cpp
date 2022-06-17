@@ -13,9 +13,6 @@ void UI_Frame::Update(RenderWindow& window, Event event)
 	percentBounds = { (float)window.getSize().x / 100.f, 
 					(float)window.getSize().y / 100.f };					// Set percentage values for current screen size
 
-	drawables.clear();														// Clear the drawable object list, so it can be rewritten with updated information
-	for (UI_Element* element : elements) element->RenderUpdate(drawables);	// Update the render information for each element (visibility, etc.)
-
 	/*health.text.setString("Health: " + to_string(pointerGame->lives));
 	health.globalBounds = health.text.getGlobalBounds();
 	health.text.setPosition((percentBounds.x * 2.f), (percentBounds.y * 2.f));
@@ -26,6 +23,9 @@ void UI_Frame::Update(RenderWindow& window, Event event)
 }
 std::vector<Drawable*> UI_Frame::Render()
 {
+	drawables.clear();														// Clear the drawable object list, so it can be rewritten with updated information
+	for (UI_Element* element : elements) element->RenderUpdate(drawables);	// Update the render information for each element (visibility, etc.)
+
 	return drawables;
 }
 
@@ -44,8 +44,7 @@ void UI_Element::RenderUpdate(std::vector<sf::Drawable*>& drawables)
 {
 	if (visible)
 	{
-		for (Drawable* subelement : drawable_Subelements)
-		drawables.push_back(subelement);
+		for (Drawable* subelement : drawable_Subelements) drawables.push_back(subelement);
 	}
 }
 
@@ -70,6 +69,13 @@ void UI_Interactable::Drag(sf::Mouse::Button const& mouseButton)
 
 void TextBox::Init(UI_Frame& parentFramePointer, Vector2f bounds, bool visible, bool enabled) 
 {
-	UI_Element::Init(parentFramePointer, bounds, visible, enabled);
+	text.setString("test");
+	text.setFont(pointerResource->DSEG14Classic.Regular);
+	text.setFillColor(sf::Color::White);
+	text.setPosition(0.f, 0.f);
+	
+	drawable_Subelements.push_back(&text);
+	drawable_Subelements.push_back(&box);
 
+	UI_Element::Init(parentFramePointer, bounds, visible, enabled);
 }

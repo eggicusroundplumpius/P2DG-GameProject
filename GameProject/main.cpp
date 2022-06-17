@@ -19,13 +19,13 @@ int main()
 	Game game;			// Root Game Object
 	UI_Frame ui_frame;	// Root UI Object
 
-	TextBox health_text;
-	health_text.Init(ui_frame, Vector2f{ windowResolution.width / 10.f, windowResolution.height / 5.f});
-	Button pause_button;
-	pause_button.Init(ui_frame, Vector2f{ windowResolution.width / 10.f, windowResolution.height / 5.f });
-
 	// Root initialisation
 	Init(resource, utils, game, ui_frame);
+
+	TextBox health_text;
+	health_text.Init(ui_frame, Vector2f{ windowResolution.width / 10.f, windowResolution.height / 5.f});
+	//Button pause_button;
+	//pause_button.Init(ui_frame, Vector2f{ windowResolution.width / 10.f, windowResolution.height / 5.f });
 
 	float elapsed;		// Time elapsed since last update
 	Clock mainClock;	// Main program clock
