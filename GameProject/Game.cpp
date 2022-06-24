@@ -60,11 +60,11 @@ using namespace std;
 			if (Keyboard::isKeyPressed(Keyboard::Up))
 			{
 				thrust.y = -Defaults::playerSpeed;
-				std::cout << "up arrow\n";
+				std::cout << "[" << this << "]" << " up arrow\n";
 			}
 			else if (Keyboard::isKeyPressed(Keyboard::Down))
 			{
-				std::cout << "down arrow\n";
+				std::cout << "[" << this << "]" << " down arrow\n";
 				thrust.y = Defaults::playerSpeed;
 			}
 		}
@@ -159,7 +159,7 @@ using namespace std;
 
 			sprite.setPosition(pointerGame->percentBounds.x * 50.f, pointerGame->percentBounds.y * 50.f);
 			sprite.setScale({3, 3});
-			std::cout << "Player instance created\n";
+			std::cout << "[" << this << "]" << " Player instance created\n";
 			break;
 
 		case (Type::Enemy):
@@ -167,7 +167,7 @@ using namespace std;
 			visible = false;
 			enabled = false;
 
-			std::cout << "Enemy instance created\n";
+			std::cout << "[" << this << "]" << " Enemy instance created\n";
 			break;
 
 		case (Type::Static_Environment):
@@ -175,7 +175,7 @@ using namespace std;
 			visible = true;
 			enabled = true;
 
-			std::cout << "Static Environment instance created\n";
+			std::cout << "[" << this << "]" << " Static Environment instance created\n";
 			break;
 
 		case (Type::Dyn_Environment):
@@ -183,7 +183,7 @@ using namespace std;
 			visible = false;
 			enabled = false;
 
-			std::cout << "Dynamic Environment instance created\n";
+			std::cout << "[" << this << "]" << " Dynamic Environment instance created\n";
 			break;
 
 		};
@@ -221,7 +221,7 @@ using namespace std;
 			for (Object* object : pointerGame->Objects)
 				if (distanceCheck(this->position, object->position, collisionRadius))
 				{
-					std::cout << "Colliding...\n";
+					std::cout << "[" << this << "]" << " Colliding...\n";
 					return true;
 				};
 			return false;

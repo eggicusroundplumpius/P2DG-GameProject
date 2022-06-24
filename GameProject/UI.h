@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include "Utils.h"
 #include "Game.h"
 
@@ -8,6 +9,9 @@ class UI_Element;
 
 class UI_Frame
 {
+	friend struct TextBox;
+	friend struct PictureBox;
+	friend struct Button;
 public:
 	/// ///////////////////////////////////////////////////////////
 	///
@@ -54,6 +58,7 @@ protected:
 
 private:
 	sf::FloatRect frame;					// Size of frame
+	sf::RectangleShape debugBounds;			// Debug Outline
 	int selectedInteractable;				// Vector index of interactable element currently selected
 };
 
@@ -68,7 +73,8 @@ public:
 		bool enabled = true);
 	void RenderUpdate(std::vector<sf::Drawable*>& drawables);
 
-	sf::FloatRect globalBounds;
+	sf::FloatRect globalBounds;						// Overall Bounds of an element
+	sf::RectangleShape debugBounds;					// Debug boundaries
 	bool visible, enabled = true;					// Should this be drawable, and updatable?
 	elementType type;								// What type is this element? (I know, I'm lazy and this isn't that elegant)
 	std::vector<Drawable*> drawable_Subelements;	// Subelements (text, rectangles, compound shapes, etc.) that can be drawn
@@ -124,8 +130,13 @@ struct TextBox : UI_Element
 		bool visible = true,
 		bool enabled = true);
 
+	bool setPosition(Vector2f position);
+
 	sf::Text text;
 	sf::RectangleShape box;
+
+	Vector2f spacing;
+	bool boxVisible;
 
 	elementType type = elementType::textbox;
 };

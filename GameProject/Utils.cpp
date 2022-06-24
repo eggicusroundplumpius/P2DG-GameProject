@@ -32,43 +32,49 @@ bool UtilityBelt::Load(std::vector<FontType*> const& loadObjects, vector<vector<
 		
 		if (!fontLib[0].empty())
 		{
-			std::cout << "Attempting to load " << fontLib[0] << "\n";	//Regular
+			std::cout << "[" << this << "]" << " Attempting to load " << fontLib[0] << "... ";	//Regular
 			loadObjects[i]->Regular.loadFromFile(fontLib[0]);
+			if (loadObjects[i]) cout << "Success!" << "\n";
 		}
 		else missingCount++;
 		
 		if (!fontLib[1].empty())
 		{
-			std::cout << "Attempting to load " << fontLib[1] << "\n";	//Italic
+			std::cout << "[" << this << "]" << " Attempting to load " << fontLib[1] << "... ";	//Italic
 			loadObjects[i]->Italic.loadFromFile(fontLib[1]);
+			if (loadObjects[i]) cout << "Success!" << "\n";
 		}
 		else missingCount++;
 		
 		if (!fontLib[2].empty())
 		{
-			std::cout << "Attempting to load " << fontLib[2] << "\n";	//Bold
+			std::cout << "[" << this << "]" << " Attempting to load " << fontLib[2] << "... ";	//Bold
 			loadObjects[i]->Bold.loadFromFile(fontLib[2]);
+			if (loadObjects[i]) cout << "Success!" << "\n";
 		}
 		else missingCount++;
 		
 		if (!fontLib[3].empty())
 		{
-			std::cout << "Attempting to load " << fontLib[3] << "\n";	//Bold Italic
+			std::cout << "[" << this << "]" << " Attempting to load " << fontLib[3] << "... ";	//Bold Italic
 			loadObjects[i]->BoldItalic.loadFromFile(fontLib[3]);
+			if (loadObjects[i]) cout << "Success!" << "\n";
 		}
 		else missingCount++;
 		
 		if (!fontLib[4].empty())
 		{
-			std::cout << "Attempting to load " << fontLib[4] << "\n";	//Light
+			std::cout << "[" << this << "]" << " Attempting to load " << fontLib[4] << "... ";	//Light
 			loadObjects[i]->Light.loadFromFile(fontLib[4]);
+			if (loadObjects[i]) cout << "Success!" << "\n";
 		}
 		else missingCount++;
 		
 		if (!fontLib[5].empty())
 		{
-			std::cout << "Attempting to load " << fontLib[5] << "\n";	//Light Italic
+			std::cout << "[" << this << "]" << " Attempting to load " << fontLib[5] << "... ";	//Light Italic
 			loadObjects[i]->LightItalic.loadFromFile(fontLib[5]);
+			if (loadObjects[i]) cout << "Success!" << "\n";
 		}
 		else missingCount++;
 
@@ -83,7 +89,7 @@ bool UtilityBelt::Load(std::vector<sf::Texture*> const& loadObjects, vector<stri
 {
 	if (loadObjects.size() != loadPaths.size())
 	{
-		cout << "Error reading path list: mismatching entries. Textures not loaded." << "\n";
+		cout << "[" << this << "]" << " Error reading path list: mismatching entries. Textures not loaded." << "\n";
 		return false;
 	}
 
@@ -92,10 +98,10 @@ bool UtilityBelt::Load(std::vector<sf::Texture*> const& loadObjects, vector<stri
 	{
 		if (!path.empty())
 		{
-			std::cout << "Attempting to Load " << path << "\n";
-			loadObjects[i]->loadFromFile(path);
+			std::cout << "[" << this << "]" << " Attempting to Load " << path << "... ";
+			if (loadObjects[i]->loadFromFile(path)) cout << "Success!" << "\n";
 		}
-		else std::cout << "Failed to Load " << path << "\n";
+		else std::cout << "[" << this << "]" << " Failed to Load " << path << "\n";
 
 		i++;
 	}

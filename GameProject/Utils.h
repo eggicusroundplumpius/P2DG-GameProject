@@ -13,8 +13,9 @@ namespace Defaults
 	const std::string windowName = "Game Project";			// Default Window Name
 	const unsigned fpsLimit = 60u;							// Default Frame Rate Limit
 
-	const unsigned fontSize = 4u;				// Default Font Size
-	const Vector2f iconSize = { 32.f, 32.f };	// Default UI Icon Size
+	const unsigned fontSize = 30u;					// Default Font Size
+	const Vector2f fontSpacing = { 0.1f, 0.05f };	// Default Font Spacing (Between text blocks / Between lines)
+	const Vector2f iconSize = { 32.f, 32.f };		// Default UI Icon Size
 
 	const int playerSpeed = 200;		// Default Player Movement Speed
 	const float thrustPercent = 0.1f;	// Default Thrust Percentage
@@ -23,9 +24,10 @@ namespace Defaults
 	const int progressionFactor = 3;	// Default speed at which the level gets faster (harder)
 
 	const bool physicsVisibleBoundaries = false;		// Whether to draw physics boundaries
+	const bool debugBoundaries = false;					// Whether to always draw shape outlines (for debug purposes)
 }
 
-enum class gameMode { menuRoot, menuOptions, menuAbout, gamePlay, gamePause };		// Available Screens and Menu Configurations
+enum class gameMode { menuRoot, menuOptions, menuAbout, gamePlay, gamePause };	// Available Screens and Menu Configurations
 
 /// ///////////////////////////////////////////////////////////
 ///

@@ -22,8 +22,11 @@ int main()
 	// Root initialisation
 	Init(resource, utils, game, ui_frame);
 
-	TextBox health_text;
-	health_text.Init(ui_frame, Vector2f{ windowResolution.width / 10.f, windowResolution.height / 5.f});
+	TextBox score_text;
+	score_text.Init(ui_frame, Vector2f{ windowResolution.width / 10.f, 
+										windowResolution.height / 5.f});
+	score_text.setPosition(Vector2f{ windowResolution.width - (windowResolution.width / 10.f),
+									windowResolution.height - (windowResolution.height / 20.f) });
 	//Button pause_button;
 	//pause_button.Init(ui_frame, Vector2f{ windowResolution.width / 10.f, windowResolution.height / 5.f });
 
