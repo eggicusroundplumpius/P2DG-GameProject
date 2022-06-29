@@ -5,8 +5,6 @@ using namespace sf;
 using namespace std;
 using namespace Defaults;
 
-void Init(Resource& resource, UtilityBelt& utils, Game& game, UI_Frame& ui);
-void Update(RenderWindow& window, Game& game, UI_Frame& ui, Event& event, float elapsed);
 void Render(RenderWindow& window, Game& game, UI_Frame& ui, float elapsed);
 
 int main()
@@ -19,16 +17,25 @@ int main()
 	Game game;			// Root Game Object
 	UI_Frame ui_frame;	// Root UI Object
 
-	// Root initialisation
-	Init(resource, utils, game, ui_frame);
+	// Load Resources (textures, fonts, etc.)
+	utils.Load(resource.loadFonts, resource.loadFontPaths);
+	utils.Load(resource.loadTextures, resource.loadTexturePaths);
+
+	// Initialise core components
+	ui_frame.Init(&resource, &game, &utils);
+	game.Init(&resource, &utils);
 
 	TextBox score_text;
 	score_text.Init(ui_frame, Vector2f{ windowResolution.width / 10.f, 
 										windowResolution.height / 5.f});
 	score_text.setPosition(Vector2f{ windowResolution.width - (windowResolution.width / 10.f),
 									windowResolution.height - (windowResolution.height / 20.f) });
-	//Button pause_button;
-	//pause_button.Init(ui_frame, Vector2f{ windowResolution.width / 10.f, windowResolution.height / 5.f });
+
+	Static_Environment background;
+	background.Init(&game, resource.texBackground);
+
+	Player player1;
+	player1.Init(&game, resource.texPlayer);
 
 	float elapsed;		// Time elapsed since last update
 	Clock mainClock;	// Main program clock
@@ -40,41 +47,20 @@ int main()
 		mainClock.restart();
 
 		Event event;
+		while (window.pollEvent(event)) if (event.type == Event::Closed) window.close();
+		if (Keyboard::isKeyPressed(Keyboard::Key::Escape)) window.close();
 
-		Update(window, game, ui_frame, event, elapsed);
+		ui_frame.Update(window, event);
+		game.Update(window, event, elapsed);
+
+		score_text.text.setString("test");
 		Render(window, game, ui_frame, elapsed);
 	}
 
 	return 0;
 }
-
-void Init(Resource& resource, UtilityBelt& utils, Game& game, UI_Frame& ui)
-{
-	//Load resources
-	utils.Load(resource.loadFonts, resource.loadFontPaths);
-	utils.Load(resource.loadTextures, resource.loadTexturePaths);
-	
-	//Initialise Major Parent Objects
-	ui.Init(&resource, &game, &utils);
-
-	game.Init(&resource);
-}
-void Update(RenderWindow& window, Game& game, UI_Frame& ui, Event& event, float elapsed)
-{
-	//If an event to close the window is triggered, close the window
-	while (window.pollEvent(event)) if (event.type == Event::Closed) window.close();
-	if (Keyboard::isKeyPressed(Keyboard::Key::Escape)) window.close();
-	
-	//Update Major Parent Objects
-	ui.Update(window, event);
-	game.Update(window, event, elapsed);
-}
 void Render(RenderWindow& window, Game& game, UI_Frame& ui, float elapsed)
 {
-	//Run Render tasks for Major Parent Objects
-	game.Render(window, elapsed);
-
-	//Draw distilled drawables to window
-	draw(ui.Render(), game.Drawables, window);
+	draw(ui.Render(), game.Render(), window);
 	window.display();
 }

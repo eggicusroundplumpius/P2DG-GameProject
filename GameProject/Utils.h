@@ -8,37 +8,41 @@ using namespace sf;
 
 namespace Defaults
 {
-	const sf::VideoMode windowResolution = { 1280, 720 };	// Default Window Resolution
-	const Uint32 windowMode = sf::Style::Titlebar;			// Default Window Style
-	const std::string windowName = "Game Project";			// Default Window Name
-	const unsigned fpsLimit = 60u;							// Default Frame Rate Limit
+	const sf::VideoMode windowResolution = { 1280, 720 };		// Default Window Resolution
+	const Uint32 windowMode = sf::Style::Titlebar;				// Default Window Style
+	const std::string windowName = "Flight of B.O.B. Tarquin";	// Default Window Name
+	const unsigned fpsLimit = 60u;								// Default Frame Rate Limit
 
 	const unsigned fontSize = 30u;					// Default Font Size
 	const Vector2f fontSpacing = { 0.1f, 0.05f };	// Default Font Spacing (Between text blocks / Between lines)
 	const Vector2f iconSize = { 32.f, 32.f };		// Default UI Icon Size
 
-	const int playerSpeed = 200;		// Default Player Movement Speed
-	const float thrustPercent = 0.1f;	// Default Thrust Percentage
-	const int enemySpeed = 20;			// Default Enemy Movement Speed
-	const int gravityFactor = 10;		// Default Gravity Factor
-	const int progressionFactor = 3;	// Default speed at which the level gets faster (harder)
+	const float playerSpeed = 100.f;		// Default Player Movement Speed
+	const float player_movementPower = 20.f;	// Default Player Movement (velocity-changing) Power
+	const float thrustPercent = 0.1f;		// Default Thrust Percentage
+	const float enemySpeed = 20.f;			// Default Enemy Movement Speed
+	const float gravityFactor = 5.f;		// Default Gravity Factor
+	const float terminal_velocity = 200.f;	// Default Terminal Speed
+	const int progressionFactor = 3;		// Default speed at which the level gets faster (harder)
+	const int max_obstacleCount = 8;		// Default maximum number of obstacles on screen at once.
 
-	const bool physicsVisibleBoundaries = false;		// Whether to draw physics boundaries
-	const bool debugBoundaries = false;					// Whether to always draw shape outlines (for debug purposes)
+	const bool physicsVisibleBoundaries = false;	// Whether to draw physics boundaries
+	const bool debugBoundaries = false;				// Whether to always draw shape outlines (for debug purposes)
 }
 
-enum class gameMode { menuRoot, menuOptions, menuAbout, gamePlay, gamePause };	// Available Screens and Menu Configurations
+enum class gameMode { menuRoot, menuOptions, menuAbout, gamePlay, gamePause };		// Available Screens and Menu Configurations
+enum class gameobjectType { Player, Enemy, Static_Environment, Dyn_Environment };	// Available Game Object Types (for use in relation to class 'Game')
 
 /// ///////////////////////////////////////////////////////////
 ///
 /// [DEPRECATED] Simple datatype for holding x and y dimensions
 /// 
 /// ///////////////////////////////////////////////////////////
-struct Dim2D
+/*struct Dim2D
 {
 	struct integer { int x, y; };	// Integer Type
 	struct real { float x, y; };	// Real (float) Type
-};
+};*/
 
 /// ///////////////////////////////////////////////////////////
 ///
@@ -140,7 +144,7 @@ struct UtilityBelt
 /// \param window - window to draw to
 /// 
 /// ///////////////////////////////////////////////////////////
-void draw(std::vector<sf::Drawable*> uiDrawables, std::vector<sf::Drawable*>& gameDrawables, sf::RenderWindow& window);
+void draw(std::vector<sf::Drawable*> uiDrawables, std::vector<sf::Drawable*> gameDrawables, sf::RenderWindow& window);
 
 
 /// ///////////////////////////////////////////////////////////

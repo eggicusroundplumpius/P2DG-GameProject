@@ -52,9 +52,9 @@ public:
 
 	std::vector <Drawable*> drawables;		// Vector for all visible drawable members of all UI Element instances
 protected:
-	Resource* pointerResource;				// Pointer to root Resource object
-	Game* pointerGame;						// Pointer to root Game object
-	UtilityBelt* pointerUtils;				// Pointer to root Utility object
+	Resource* pointerResource = nullptr;				// Pointer to root Resource object
+	Game* pointerGame = nullptr;						// Pointer to root Game object
+	UtilityBelt* pointerUtils = nullptr;				// Pointer to root Utility object
 
 private:
 	sf::FloatRect frame;					// Size of frame
@@ -79,13 +79,11 @@ public:
 	elementType type;								// What type is this element? (I know, I'm lazy and this isn't that elegant)
 	std::vector<Drawable*> drawable_Subelements;	// Subelements (text, rectangles, compound shapes, etc.) that can be drawn
 
-	UI_Frame* parentFramePointer;				// Pointer to parent UI object
+	UI_Frame* parentFramePointer = nullptr;				// Pointer to parent UI object
 protected:
-	Resource* pointerResource;					// Pointer to root Resource object
-	Game* pointerGame;							// Pointer to root Game object
-	UtilityBelt* pointerUtils;					// Pointer to root Utility object
-	
-
+	Resource* pointerResource = nullptr;					// Pointer to root Resource object
+	Game* pointerGame = nullptr;							// Pointer to root Game object
+	UtilityBelt* pointerUtils = nullptr;					// Pointer to root Utility object
 };
 
 class UI_Interactable	// Interactable class for any elements that can trigger events

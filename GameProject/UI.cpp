@@ -30,13 +30,6 @@ void UI_Frame::Update(RenderWindow& window, Event event)
 	percentBounds = { (float)window.getSize().x / 100.f, 
 					(float)window.getSize().y / 100.f };					// Set percentage values for current screen size
 
-	/*health.text.setString("Health: " + to_string(pointerGame->lives));
-	health.globalBounds = health.text.getGlobalBounds();
-	health.text.setPosition((percentBounds.x * 2.f), (percentBounds.y * 2.f));
-
-	score.text.setString("Score: " + to_string(pointerGame->score));
-	score.globalBounds = score.text.getGlobalBounds();
-	score.text.setPosition((percentBounds.x * 2.f), (percentBounds.y * 2.f) + score.globalBounds.height * 1.2);*/
 }
 std::vector<Drawable*> UI_Frame::Render()
 {

@@ -4,7 +4,7 @@
 
 #include "Utils.h"
 
-void draw(std::vector<sf::Drawable*> uiDrawables, std::vector<sf::Drawable*>& gameDrawables, sf::RenderWindow& window)
+void draw(std::vector<sf::Drawable*> uiDrawables, std::vector<sf::Drawable*> gameDrawables, sf::RenderWindow& window)
 {
 	for (Drawable* gameDrawable : gameDrawables) window.draw(*gameDrawable);
 	for (Drawable* uiDrawable : uiDrawables) window.draw(*uiDrawable);
