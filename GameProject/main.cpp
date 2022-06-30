@@ -44,6 +44,7 @@ int main()
 	while (window.isOpen())
 	{
 		elapsed = mainClock.getElapsedTime().asSeconds();
+		game.score += elapsed;
 		mainClock.restart();
 
 		Event event;
@@ -53,7 +54,7 @@ int main()
 		ui_frame.Update(window, event);
 		game.Update(window, event, elapsed);
 
-		score_text.text.setString("test");
+		score_text.text.setString("Time: " + to_string(floor(game.score * 100.f) / 100.f));
 		Render(window, game, ui_frame, elapsed);
 	}
 

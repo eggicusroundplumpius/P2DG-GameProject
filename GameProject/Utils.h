@@ -17,14 +17,15 @@ namespace Defaults
 	const Vector2f fontSpacing = { 0.1f, 0.05f };	// Default Font Spacing (Between text blocks / Between lines)
 	const Vector2f iconSize = { 32.f, 32.f };		// Default UI Icon Size
 
-	const float playerSpeed = 100.f;		// Default Player Movement Speed
+	const int health = 3;						// Default Health Value for Objects
+	const float playerSpeed = 100.f;			// Default Player Movement Speed
 	const float player_movementPower = 20.f;	// Default Player Movement (velocity-changing) Power
-	const float thrustPercent = 0.1f;		// Default Thrust Percentage
-	const float enemySpeed = 20.f;			// Default Enemy Movement Speed
-	const float gravityFactor = 5.f;		// Default Gravity Factor
-	const float terminal_velocity = 200.f;	// Default Terminal Speed
-	const int progressionFactor = 3;		// Default speed at which the level gets faster (harder)
-	const int max_obstacleCount = 8;		// Default maximum number of obstacles on screen at once.
+	const float thrustPercent = 0.1f;			// Default Thrust Percentage
+	const float enemySpeed = 100.f;				// Default Enemy Movement Speed
+	const float gravityFactor = 5.f;			// Default Gravity Factor
+	const float terminal_velocity = 400.f;		// Default Terminal Speed
+	const int progressionFactor = 3;			// Default speed at which the level gets faster (harder)
+	const int max_obstacleCount = 8;			// Default maximum number of obstacles on screen at once.
 
 	const bool physicsVisibleBoundaries = false;	// Whether to draw physics boundaries
 	const bool debugBoundaries = false;				// Whether to always draw shape outlines (for debug purposes)

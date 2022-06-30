@@ -1,11 +1,3 @@
-#include <assert.h>
-#include <string>
-#include <math.h>
-#include <sstream>
-#include <iomanip>
-#include <iostream>
-#include <fstream>
-#include <limits.h>
 
 #include "Game.h"
 
@@ -23,8 +15,16 @@ void Game::Update(RenderWindow& window, Event event, float elapsed)
 {
 	windowSize = { (float)window.getSize().x, (float)window.getSize().y };
 	percentBounds = { (float)window.getSize().x / 100.f, (float)window.getSize().y / 100.f };
-	for (Object* object : objects) object->Update(elapsed);
-	//Obstacle_Generation();
+	for (Object* object : objects)
+	{
+		object->Update(elapsed);
+		if (object->health <= 0)
+		{
+			Lose();
+			break;
+		}
+	}
+	obstacleGeneration();
 }
 std::vector<Drawable*> Game::Render()
 {
@@ -38,21 +38,36 @@ bool Game::isColliding(Physics* object1, Physics* object2)
 	//unfinished..
 	return false;
 }
-void Game::Obstacle_Generation()
+void Game::obstacleGeneration()
 {
-	for (int i = 0; i < obstacles.size(); i++)
+	for (int i = 0; i < (int)obstacles.size(); i++)
 	{
-		if (obstacles[i].position.x < windowSize.x)
+		if (obstacles[i]->position.x < 0.f)
 		{
-			obstacles[i].Destroy(this);
+			obstacles[i]->Destroy(this);
+			delete obstacles[i];
 			obstacles.erase(obstacles.begin() + i);
 		}
+		if (i == obstacles.size()) break;
 	}
 	if (obstacles.size() < Defaults::max_obstacleCount)
 	{
-		//obstacles.emplace_back(new Obstacle);
-		obstacles.back().Init(this, pointerResource->texEnemy);
+		obstacles.push_back(new Obstacle);
+		obstacles[obstacles.size()-1]->Init(this, pointerResource->texEnemy);
 	}
+}
+void Game::Lose()
+{
+	for (Object* object : objects) object->Reset();
+	score = 0.f;
+	for (int i = (int)obstacles.size() - 1; i >= 0; i--)
+	{
+		obstacles[i]->Destroy(this);
+		delete obstacles[i];
+		obstacles.erase(obstacles.begin() + i);
+		//if (i == obstacles.size()) break;
+	}
+	std::cout << "[" << this << "]" << " You Lose! \n";
 }
 
 
@@ -63,20 +78,27 @@ void Object::Init(Game* pointerGame_In, Texture& tex)
 	parentGamePointer = pointerGame_In;
 
 	sprite.setTexture(tex);
-	spriteRect = sprite.getTextureRect();
+	//spriteRect = sprite.getTextureRect();
 	parentGamePointer->objects.push_back(this);
 }
 void Object::Update(float elapsed)
 {
 	if (enabled) position = sprite.getPosition();
+
+	if (velocity.y < (Defaults::terminal_velocity * -1.f) && velocity.y < 0.f) velocity.y = (Defaults::terminal_velocity * -1.f);
+	else if (velocity.y > Defaults::terminal_velocity && velocity.y > 0.f) velocity.y = Defaults::terminal_velocity;
 }
 void Object::RenderUpdate(std::vector <sf::Drawable*>& drawables)
 {
 	if (visible) parentGamePointer->drawables.push_back(&this->sprite);
 }
+void Object::Reset()
+{
+	health = Defaults::health;
+}
 void Object::Destroy(Game* parentGamePointer)
 {
-	for (int i = 0; i < parentGamePointer->objects.size(); i++)
+	for (int i = 0; i < (int)parentGamePointer->objects.size(); i++)
 		if (parentGamePointer->objects[i] == this) 
 			parentGamePointer->objects.erase(parentGamePointer->objects.begin() + i);
 }
@@ -84,10 +106,41 @@ void Object::Destroy(Game* parentGamePointer)
 void Physics::Init(Game* pointerGame_In, Texture& tex)
 {
 	pointerGame_In->collidables.push_back(this);
+	spriteRect = derived->sprite.getTextureRect();
+	spriteRect.left = (int)derived->position.x;
+	spriteRect.top = (int)derived->position.y;
+}
+void Physics::Update(float elapsed)
+{
+	spriteRect.left = (int)derived->position.x;
+	spriteRect.top = (int)derived->position.y;
+
+	sf::Vector2f& velocity = derived->velocity;
+	if (gravityResponsive) velocity.y += Defaults::gravityFactor * pow(elapsed, 0.01f) / 2.f;
+
+	/*for (Physics* peer_collidable : derived->parentGamePointer->collidables)
+	{
+		if (peer_collidable != this)
+		{
+			for (Obstacle* obstacle : derived->parentGamePointer->obstacles)
+			{
+				if (obstacle != peer_collidable->derived)
+				{
+					if (spriteRect.intersects(peer_collidable->spriteRect)) peer_collidable->Collide(this);
+				}
+			}
+		}
+	}*/
+}
+void Physics::Collide(Obstacle* origin)
+{
+	origin->derived->health -= 1;
+	derived->health -= 1;
+	std::cout << "[" << this << "]" << " Collision between '" << this << "' and '" << origin << "'.\n";
 }
 void Physics::Destroy(Game* parentGamePointer)
 {
-	for (int i = 0; i < parentGamePointer->collidables.size(); i++)
+	for (int i = 0; i < (int)parentGamePointer->collidables.size(); i++)
 		if (parentGamePointer->collidables[i] == this)
 			parentGamePointer->collidables.erase(parentGamePointer->collidables.begin() + i);
 }
@@ -98,6 +151,8 @@ void Controllable::Init(Game* pointerGame_In, Texture& tex)
 }
 void Controllable::Update(float elapsed)
 {
+	sf::Vector2f& velocity = derived->velocity;
+
 	if (Keyboard::isKeyPressed(Keyboard::Up) || Keyboard::isKeyPressed(Keyboard::Down))
 	{
 		if (Keyboard::isKeyPressed(Keyboard::Up))
@@ -112,18 +167,11 @@ void Controllable::Update(float elapsed)
 		}
 	}
 
-	//velocity = Decay(velocity, 0.1f, 0.1f, elapsed);
-
-	velocity.y += Defaults::gravityFactor * pow(elapsed, 0.1f) / 2.f;
-
-	if (velocity.y < (Defaults::terminal_velocity * -1.f) && velocity.y < 0.f) velocity.y = (Defaults::terminal_velocity * -1.f);
-	else if (velocity.y > Defaults::terminal_velocity && velocity.y > 0.f) velocity.y = Defaults::terminal_velocity;
-
-	std::cout << "[" << this << "]" << " Velocity is (" << velocity.x << ", " << velocity.y << ").\n";
+	//std::cout << "[" << this << "]" << " Velocity is (" << velocity.x << ", " << velocity.y << ").\n";
 }
 void Controllable::Destroy(Game* parentGamePointer)
 {
-	for (int i = 0; i < parentGamePointer->controllables.size(); i++)
+	for (int i = 0; i < (int)parentGamePointer->controllables.size(); i++)
 		if (parentGamePointer->controllables[i] == this)
 			parentGamePointer->controllables.erase(parentGamePointer->controllables.begin() + i);
 }
@@ -131,6 +179,7 @@ void Controllable::Destroy(Game* parentGamePointer)
 void Static_Environment::Init(Game* pointerGame_In, Texture& tex)
 {
 	Object::Init(pointerGame_In, tex);
+	sprite.setScale({ 3,3 });
 
 	std::cout << "[" << this << "]" << " Static Environment instance created\n";
 }
@@ -153,14 +202,15 @@ void Dyn_Environment::Destroy(Game* parentGamePointer)
 
 void Player::Init(Game* pointerGame_In, Texture& tex)
 {
+	Controllable::derived = this;
+	Physics::derived = this;
+
+	sprite.setPosition(pointerGame_In->percentBounds.x * 5.f, pointerGame_In->percentBounds.y * 50.f);
+	sprite.setScale({ 3, 3 });
+
 	Object::Init(pointerGame_In, tex);
 	Physics::Init(pointerGame_In, tex);
 	Controllable::Init(pointerGame_In, tex);
-
-	sprite.setPosition(parentGamePointer->percentBounds.x * 50.f, parentGamePointer->percentBounds.y * 50.f);
-	sprite.setScale({ 3, 3 });
-
-	controllable_member = this;
 
 	std::cout << "[" << this << "]" << " Player instance created. Position is (" << position.x << ", " << position.y << "). " 
 		<< "Bounds are (" << bounds.width << ", " << bounds.height << ") at (" << bounds.left << ", " << bounds.top << ").\n";
@@ -169,8 +219,15 @@ void Player::Init(Game* pointerGame_In, Texture& tex)
 void Player::Update(float elapsed)
 {
 	Object::Update(elapsed);
-
+	Physics::Update(elapsed);
 	Controllable::Update(elapsed);
+
+	//velocity = Decay(velocity, 0.1f, 0.1f, elapsed);
+	for (Obstacle* obstacle : parentGamePointer->obstacles)
+	{
+		if (spriteRect.intersects(obstacle->spriteRect)) Collide(obstacle);
+	}
+
 	position += velocity * elapsed;
 	if (position.y < (bounds.height * 0.1f))
 	{
@@ -184,21 +241,44 @@ void Player::Update(float elapsed)
 	}
 	sprite.setPosition(position);
 }
+void Player::Reset()
+{
+	Object::Reset();
+	sprite.setPosition(parentGamePointer->percentBounds.x * 5.f, parentGamePointer->percentBounds.y * 50.f);
+	velocity = { 0.f, 0.f };
+	std::cout << "[" << this << "]" << " Player Reset.\n";
+}
 void Obstacle::Init(Game* pointerGame_In, Texture& tex)
 {
+	Physics::derived = this;
+
+	int randPosition = rand() % (int)pointerGame_In->windowSize.y;
+	sprite.setPosition(pointerGame_In->windowSize.x, (float)randPosition);
+	position = { pointerGame_In->windowSize.x, (float)randPosition };
+	sprite.setScale({ 0.1f, 0.1f });
+
 	Object::Init(pointerGame_In, tex);
 	Physics::Init(pointerGame_In, tex);
 
-	sprite.setPosition(parentGamePointer->percentBounds.x * 50.f, parentGamePointer->percentBounds.y * 50.f);
-	sprite.setScale({ 3, 3 });
+	gravityResponsive = false;
+	health = 1;
+
+	velocity.x = (rand() & (int)Defaults::terminal_velocity) * -1.f;
+
+	std::cout << "[" << this << "]" << " Obstacle instance created. Position is (" << position.x << ", " << position.y << "). "
+		<< "Bounds are (" << bounds.width << ", " << bounds.height << ") at (" << bounds.left << ", " << bounds.top << ").\n";
 }
 void Obstacle::Update(float elapsed)
 {
 	Object::Update(elapsed);
+	Physics::Update(elapsed);
 
+	position += velocity * elapsed;
+	sprite.setPosition(position);
 }
 void Obstacle::Destroy(Game* parentGamePointer)
 {
 	Object::Destroy(parentGamePointer);
 	Physics::Destroy(parentGamePointer);
+	std::cout << "[" << this << "]" << " Obstacle Destruction.\n";
 }

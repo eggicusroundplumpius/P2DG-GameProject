@@ -8,12 +8,12 @@ void UI_Frame::Init(Resource* pointerResource_In, Game* pointerGame_In, UtilityB
 	pointerGame = pointerGame_In;
 	pointerUtils = pointerUtils_In;
 
-	frame.width = (unsigned)Defaults::windowResolution.width - 
-					((unsigned)Defaults::windowResolution.width / 50u);		// Calculating a padding of 2% smaller than the window's width
-	frame.left = (unsigned)Defaults::windowResolution.width / 50u;			// Offsetting coordinate to centre frame object
-	frame.height = (unsigned)Defaults::windowResolution.height - 
-					((unsigned)Defaults::windowResolution.height / 50u);	// "		" ... for height
-	frame.top = (unsigned)Defaults::windowResolution.height / 50u;			// "		" ... for height
+	frame.width = (float)Defaults::windowResolution.width - 
+					((float)Defaults::windowResolution.width / 50.f);		// Calculating a padding of 2% smaller than the window's width
+	frame.left = (float)Defaults::windowResolution.width / 50.f;			// Offsetting coordinate to centre frame object
+	frame.height = (float)Defaults::windowResolution.height - 
+					((float)Defaults::windowResolution.height / 50.f);		// "		" ... for height
+	frame.top = (float)Defaults::windowResolution.height / 50.f;			// "		" ... for height
 
 	if (Defaults::debugBoundaries)
 	{
